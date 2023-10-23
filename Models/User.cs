@@ -11,8 +11,16 @@ namespace Models
         
         public String? Password { get; set; }
         public int Reputation { get; set; }
-        public List<UserFriend> Friends { get; set; }
-        public List<Session> Sessions { get; set; }
-        
+        public List<UserFriend> FirstUserFriends { get; set; }
+        public List<UserFriend> SecondUserFriends { get; set; }
+        public List<Session> FirstSessions { get; set; }        
+        public List<Session> SecondSessions { get; set; }
+
+
+        public override string ToString()
+        {
+            return $"{Id} {Username} {Password}";
+        }
+
     }
 }

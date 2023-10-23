@@ -22,6 +22,8 @@ namespace DataAccess.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<User>()
                 .HasKey(u => u.Id);
 
@@ -33,23 +35,27 @@ namespace DataAccess.Data
 
             modelBuilder.Entity<UserFriend>()
                 .HasOne(uf => uf.FirstUser)
-                .WithMany(u => u.Friends)
-                .HasForeignKey(uf => uf.FirstUserId);
+                .WithMany(u => u.FirstUserFriends)
+                .HasForeignKey(uf => uf.FirstUserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<UserFriend>()
                 .HasOne(uf => uf.SecondUser)
-                .WithMany(u => u.Friends)
-                .HasForeignKey(uf => uf.SecondSecondId);
+                .WithMany(u => u.SecondUserFriends)
+                .HasForeignKey(uf => uf.SecondSecondId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Session>()
                 .HasOne(s => s.White)
-                .WithMany(u => u.Sessions)
-                .HasForeignKey(uf => uf.WhiteId);
+                .WithMany(u => u.FirstSessions)
+                .HasForeignKey(uf => uf.WhiteId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Session>()
                 .HasOne(s => s.Black)
-                .WithMany(u => u.Sessions)
-                .HasForeignKey(uf => uf.BlackId);
+                .WithMany(u => u.SecondSessions)
+                .HasForeignKey(uf => uf.BlackId)
+                .OnDelete(DeleteBehavior.NoAction);
 
 
         }
