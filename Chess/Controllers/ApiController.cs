@@ -11,6 +11,7 @@ namespace Chess.Controllers
 {
     
     [ApiController]
+    [Route("/api")]
     public class ApiController : Controller
     {
         private IHubContext<SignalR> _hubContext;
@@ -22,14 +23,14 @@ namespace Chess.Controllers
         }
 
 
-        [HttpPost("sessions")]
+        [HttpGet("sessions")]
         public async Task<IActionResult> GetSessionData(string sessionId)
         {
             var session = _unitOfWork.Session.Get(a=>a.Id == sessionId);
 
             if (session != null)
             {
-                string jsonData = JsonConvert.SerializeObject(session.Steps);
+                string jsonData = session.Steps;
                 return new JsonResult(jsonData);
             }
 
@@ -42,7 +43,8 @@ namespace Chess.Controllers
         {
             string id = StaticFunctions.CreateUniqueId();
             Session session = new Session { Id = id, WhiteId = host, BlackId = guest, Steps=""};
-            _unitOfWork.Session.Add(session);            
+            _unitOfWork.Session.Add(session);
+            _unitOfWork.Save();
             await _hubContext.Groups.AddToGroupAsync(id, host);
             return Ok();
         }

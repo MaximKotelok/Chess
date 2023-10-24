@@ -384,6 +384,10 @@ function executeMove(X, Y, nSquare) {
 	block[the_checker[selectedPieceindex].ocupied_square].pieceId = undefined;
 	the_checker[selectedPieceindex].ocupied_square += nSquare;
 
+
+	//MAX Тут відсилаєш 
+
+
 	// var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
 	// connection.on("ReceiveMessage", function (user, message) {
@@ -559,8 +563,7 @@ function decipherHistory(history) {
 		const [lastX, lastY] = [last[0], last[1]];
 
 
-		// alert(`Player: ${player}, BeginX: ${beginX}, BeginY: ${beginY}, LastX: ${lastX}, LastY: ${lastY}`);
-
+		/*alert(`Player: ${id}, BeginX: ${beginX}, BeginY: ${beginY}, LastX: ${lastX}, LastY: ${lastY}`);*/
 		let nSquare = ((lastY - 1) * 8) + parseInt(lastX);
 
 		let checker = document.getElementsByClassName(history_checker)[id];
@@ -598,17 +601,61 @@ document.getElementsByTagName("BODY")[0].onresize = function () {
 
 $(document).ready(function () {
 	$.ajax({
-		url: '/api/sessions/7fg345078g345fg078gh4',
+		url: '/api/sessions?sessionId=1',
 		method: 'GET',
 		dataType: 'json',
 
 		success: function (data) {
-			alert(JSON.stringify(data));
+			/*alert(JSON.stringify(data));*/
+			decipherHistory(data);
 		},
 		error: function (xhr, status, error) {
 			alert('Request failed with status: ' + status);
 		}
 	});
+});
+
+const connection = new signalR.HubConnectionBuilder().withUrl("/signalr").build();
+
+connection.on("ReceiveMove", (user, move) => {
+	console.log(`${user} made the move: ${move}`);
+	// Тут ви можете обробити отримані дані, наприклад, оновити інтерфейс гри
+});
+
+
+document.getElementById("joinGameButton1").addEventListener("click", () => {
+	const sessionId = "1"; // Встановіть свій ID сесії
+	fetch(`/api/join?sessionId=${sessionId}&connectionId=1`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	})
+		.then(() => {
+			// Приєднання до групи успішно
+			console.log("Joined the game group");
+		})
+		.catch((error) => {
+			console.error("Error joining the game group:", error);
+		});
+});
+
+document.getElementById("joinGameButton2").addEventListener("click", () => {
+	const sessionId = "2"; // Встановіть свій ID сесії
+
+	fetch(`/api/join?sessionId=${sessionId}&connectionId=1`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	})
+		.then(() => {
+			// Приєднання до групи успішно
+			console.log("Joined the game group");
+		})
+		.catch((error) => {
+			console.error("Error joining the game group:", error);
+		});
 });
 
 // const history = "9:13-24 9:26-15 10:33-44 11:66-75 12:73-84";
