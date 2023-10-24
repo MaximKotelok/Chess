@@ -4,15 +4,9 @@ using System.Diagnostics;
 
 namespace Chess.Controllers
 {
-    public class GameController : Controller   
+    public class HomeController : Controller   
     {
 
-        private readonly IUnitOfWork _unitOfWork;
-
-        public GameController(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
 
         public IActionResult Index()
         {

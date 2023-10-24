@@ -1,26 +1,48 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.SignalR;
+using System.Text.RegularExpressions;
 
 namespace Utils
 {
     public class SignalR : Hub
     {
-        public async Task SendMessageToGroup(string groupName, string user, string message)
-        {         
-            await Clients.Group(groupName).SendAsync("ReceiveMessage", user, message);
-        }
-        public async Task SendMessage(string user, string message)
-        { 
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
+        private readonly IUnitOfWork _unitOfWork;
+
+        public SignalR(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task JoinGroup(string groupName)
-        {         
-            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+        public async Task SendMove(string sessionId, string user, string move)
+        {
+
+            var session = _unitOfWork?.Session?.Get(a => a.Id == sessionId);
+            if (session != null)
+            {
+                session.Steps = $"{session.Steps} {move}";
+                _unitOfWork?.Session?.Update(session);
+                _unitOfWork?.Save();
+                
+                await SendMessageToGroup(sessionId, user, move);
+                
+            }
+
         }
 
-        public async Task LeaveGroup(string groupName)
+        private async Task SendMessageToGroup(string sessionId, string user, string message)
         {         
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
+            await Clients.Group(sessionId).SendAsync("ReceiveMessage", user, message);
+        }
+
+        public async Task JoinGameGroup(string sessionId, string connectionId)
+        {
+           
+            await Groups.AddToGroupAsync(this.Context.ConnectionId, sessionId);
+        }
+
+        public async Task LeaveGroupGroup(string sessionId, string connectionId)
+        {
+            await Groups.RemoveFromGroupAsync(this.Context.ConnectionId, sessionId);
         }
     }
 

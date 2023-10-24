@@ -1,7 +1,8 @@
 ﻿
 /*=========variabile globale=========================*/
-
-
+var isHistory = false;
+var sessionId = "1";
+var connectionId = "1";
 var square_class = document.getElementsByClassName("square");
 var white_checker_class = document.getElementsByClassName("white_checker");
 var black_checker_class = document.getElementsByClassName("black_checker");
@@ -342,11 +343,19 @@ function makeMove(index) {
 
 		const toX = block[the_checker[selectedPieceindex].ocupied_square].pieceId.coordX;
 		const toY = block[the_checker[selectedPieceindex].ocupied_square].pieceId.coordY;
-		const moveDescription = `${selectedPieceindex}:${fromX}${fromY}-${toX}${toY}`;
+		const move = `${selectedPieceindex}:${fromX}${fromY}-${toX}${toY}`;
 		// alert(moveDescription);
 
-
-		playSound(moveSound);
+		if (!isHistory) {
+			connection.invoke("SendMove", sessionId, connectionId, move)
+				.then(() => {
+					console.log("Move sent");
+				})
+				.catch((error) => {
+					console.error("Error sending the move:", error);
+				});
+		}
+		//playSound(moveSound);
 		anotherMove = undefined;
 		if (mustAttack) {
 			anotherMove = attackMoves(the_checker[selectedPieceindex]);
@@ -385,7 +394,11 @@ function executeMove(X, Y, nSquare) {
 	the_checker[selectedPieceindex].ocupied_square += nSquare;
 
 
-	//MAX Тут відсилаєш 
+	//MAX Тут відсилаєш
+
+	
+		
+	
 
 
 	// var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
@@ -522,7 +535,7 @@ function checkForMoves() {
 }
 
 function declareWinner() {
-	playSound(winSound);
+	//playSound(winSound);
 	black_background.style.display = "inline";
 	score.style.display = "block";
 	0
@@ -552,6 +565,7 @@ function decipherHistory(history) {
 	const moves = history.split(' ');
 
 	for (const move of moves) {
+		isHistory = true;
 		// Split each move based on colons to separate player and move
 		const [id, moveDetails] = move.split(':');
 
@@ -569,7 +583,7 @@ function decipherHistory(history) {
 		let checker = document.getElementsByClassName(history_checker)[id];
 		showMoves(checker);
 		makeMove(nSquare);
-
+		isHistory = false;
 
 	}
 }
@@ -617,46 +631,46 @@ $(document).ready(function () {
 
 const connection = new signalR.HubConnectionBuilder().withUrl("/signalr").build();
 
-connection.on("ReceiveMove", (user, move) => {
-	console.log(`${user} made the move: ${move}`);
-	// Тут ви можете обробити отримані дані, наприклад, оновити інтерфейс гри
-});
 
+connection.start()
+	.then(() => {
 
-document.getElementById("joinGameButton1").addEventListener("click", () => {
-	const sessionId = "1"; // Встановіть свій ID сесії
-	fetch(`/api/join?sessionId=${sessionId}&connectionId=1`, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-	})
-		.then(() => {
-			// Приєднання до групи успішно
-			console.log("Joined the game group");
-		})
-		.catch((error) => {
-			console.error("Error joining the game group:", error);
+		connection.on("ReceiveMessage", (user, move) => {
+			console.log(`${user} made the move: ${move}`);
+			if (user != connectionId) {
+				decipherHistory(move);
+			}
 		});
-});
 
-document.getElementById("joinGameButton2").addEventListener("click", () => {
-	const sessionId = "2"; // Встановіть свій ID сесії
+		document.getElementById("joinGameButton1").addEventListener("click", () => {
+			sessionId = "1"; // Встановіть свій ID сесії
+			connectionId = "1"; // Встановіть свій ID підключення (userId)
 
-	fetch(`/api/join?sessionId=${sessionId}&connectionId=1`, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-	})
-		.then(() => {
-			// Приєднання до групи успішно
-			console.log("Joined the game group");
-		})
-		.catch((error) => {
-			console.error("Error joining the game group:", error);
+			connection.invoke("JoinGameGroup", sessionId, connectionId)
+				.then(() => {
+
+					// Приєднання до групи успішно
+					console.log("Joined the game group");
+				})
+				.catch((error) => {
+					console.error("Error joining the game group:", error);
+				});
 		});
-});
+
+		document.getElementById("joinGameButton2").addEventListener("click", () => {
+			sessionId = "1"; // Встановіть свій ID сесії
+			connectionId = "2"; // Встановіть свій ID підключення (userId)
+
+			connection.invoke("JoinGameGroup", sessionId, connectionId)
+				.then(() => {
+					
+					console.log("Joined the game group");
+				})
+				.catch((error) => {
+					console.error("Error joining the game group:", error);
+				});
+		});
+	});
 
 // const history = "9:13-24 9:26-15 10:33-44 11:66-75 12:73-84";
 // const history = "11:53-64 12:86-75";
