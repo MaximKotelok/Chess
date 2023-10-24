@@ -2,8 +2,37 @@
     ViewData["Title"] = "Home Page";
 }
 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<script>
+    
+    var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+
+connection.on("ReceiveMessage", function (user, message) {
+    // Обробка отриманого повідомлення
+    console.log(user + " says: " + message);
+});
+
+    connection.start().then(function () {
+        console.log("Connected to the hub");
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    $( document ).ready(function() {
+    alert( "ready!" );
+
+    $.ajax({
+        url: '/api/sessions/7fg345078g345fg078gh4', 
+        method: 'GET',
+        dataType: 'json',
+
+        success: function (data) {
+            alert(JSON.stringify(data));
+        },
+        error: function (xhr, status, error) {
+            alert('Request failed with status: ' + status);
+        }
+    });
+});
+</script>

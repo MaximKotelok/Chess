@@ -16,6 +16,8 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+builder.Services.AddSignalR();  
+
 builder.Services.AddDbContext<ApplicationDbContext>(
         options => {
             options.UseSqlServer(
