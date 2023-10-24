@@ -15,12 +15,9 @@ namespace Chess.Controllers
         {
             _unitOfWork = unitOfWork;
         }
+
         public IActionResult Index()
         {
-            _unitOfWork.User.Add(new Models.User { Password = "password", Username="user1", Reputation=5, Id=Guid.NewGuid().ToString("N")  });
-            _unitOfWork.Save();
-            var u = _unitOfWork.User.GetAll().ToList()[0];
-            Console.WriteLine(u.Id+"----------------------------------------------------");
             return View();
         }
 
