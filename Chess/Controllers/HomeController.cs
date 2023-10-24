@@ -6,14 +6,15 @@ namespace Chess.Controllers
 {
     public class HomeController : Controller   
     {
+		
 
-
-        public IActionResult Index()
+		public IActionResult Index()
         {
+
             return View();
         }
 
-        public IActionResult Privacy()
+		public IActionResult Privacy()
         {
             return View();
         }

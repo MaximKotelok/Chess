@@ -9,7 +9,7 @@ var black_checker_class = document.getElementsByClassName("black_checker");
 var history_checker = "white_checker";
 var table = document.getElementById("table");
 var score = document.getElementById("score");
-var black_background = document.getElementById("black_background");
+/*var black_background = document.getElementById("black_background");*/
 var moveSound = document.getElementById("moveSound");
 var winSound = document.getElementById("winSound");
 var windowHeight = window.innerHeight
@@ -37,6 +37,9 @@ var mustAttack = false;
 var multiplier = 1 // 2 daca face saritura 1 in caz contrat
 
 var tableLimit, reverse_tableLimit, moveUpLeft, moveUpRight, moveDownLeft, moveDownRight, tableLimitLeft, tableLimitRight;
+
+const connection = new signalR.HubConnectionBuilder().withUrl("/signalr").build();
+
 
 /*================================*/
 getDimension();
@@ -372,6 +375,8 @@ function makeMove(index) {
 			gameOver = checkForMoves();
 			if (gameOver) { setTimeout(declareWinner(), 3000); return false };
 		}
+		selectedPieceindex = null;
+		selectedPiece = null;
 	}
 }
 
@@ -392,27 +397,6 @@ function executeMove(X, Y, nSquare) {
 	block[the_checker[selectedPieceindex].ocupied_square + nSquare].pieceId = block[the_checker[selectedPieceindex].ocupied_square].pieceId;
 	block[the_checker[selectedPieceindex].ocupied_square].pieceId = undefined;
 	the_checker[selectedPieceindex].ocupied_square += nSquare;
-
-
-	//MAX Тут відсилаєш
-
-	
-		
-	
-
-
-	// var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
-
-	// connection.on("ReceiveMessage", function (user, message) {
-	// 	// Обробка отриманого повідомлення
-	// 	console.log(user + " says: " + message);
-	// });
-
-	// connection.start().then(function () {
-	// 	console.log("Connected to the hub");
-	// }).catch(function (err) {
-	// 	return console.error(err.toString());
-	// });
 
 }
 
@@ -536,7 +520,7 @@ function checkForMoves() {
 
 function declareWinner() {
 	//playSound(winSound);
-	black_background.style.display = "inline";
+	/*black_background.style.display = "inline";*/
 	score.style.display = "block";
 	0
 	if (the_checker[1].color == "white")
@@ -562,6 +546,9 @@ function getDimension() {
 
 
 function decipherHistory(history) {
+	if (history == null) 
+		return;
+
 	const moves = history.split(' ');
 
 	for (const move of moves) {
@@ -586,6 +573,65 @@ function decipherHistory(history) {
 		isHistory = false;
 
 	}
+}
+
+function selectSide() {
+	let whiteId = getCookie("whiteId");
+	let blackId = getCookie("blackId");
+	let userId = getCookie("userId");
+
+	if (userId == whiteId) {
+		b_checker.forEach(x => {
+			x.id.onclick = function () { }
+		})
+
+	} else if (userId == blackId) { 
+		w_checker.forEach(x => {
+			x.id.onclick = function () { }
+		})
+	} else {
+		alert("Cheater")
+		return;
+	}
+
+}
+function getCookie(cname) {
+	let name = cname + "=";
+	let decodedCookie = decodeURIComponent(document.cookie);
+	let ca = decodedCookie.split(';');
+	for (let i = 0; i < ca.length; i++) {
+		let c = ca[i];
+		while (c.charAt(0) == ' ') {
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) == 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return "";
+}
+
+function setUpConnection(sessionId) {
+	let connectionId = getCookie("userId");
+	connection.invoke("JoinGameGroup", sessionId, connectionId)
+		.then(() => {
+
+			// Приєднання до групи успішно
+			console.log("Joined the game group");
+		})
+		.catch((error) => {
+			console.error("Error joining the game group:", error);
+		});
+}
+
+
+function getIdFromUrl(url) {
+	const nUrl = new URL(url);
+	const path = nUrl.pathname; // Get the pathname component of the URL
+	const parts = path.split('/'); // Split the pathname by '/'
+	const value = parts.pop();
+
+	return value;
 }
 
 
@@ -614,52 +660,50 @@ document.getElementsByTagName("BODY")[0].onresize = function () {
 }
 
 $(document).ready(function () {
+	let sessionId = getIdFromUrl(window.location.href)
 	$.ajax({
-		url: '/api/sessions?sessionId=1',
+		url: `/api/sessions?sessionId=${sessionId}`,
 		method: 'GET',
 		dataType: 'json',
 
 		success: function (data) {
-			/*alert(JSON.stringify(data));*/
+			if (data == ``) {
+				data = null;
+			}
 			decipherHistory(data);
 		},
 		error: function (xhr, status, error) {
 			alert('Request failed with status: ' + status);
 		}
 	});
+
+	selectSide();
+	
 });
 
-const connection = new signalR.HubConnectionBuilder().withUrl("/signalr").build();
+connection.start().then(() => {
 
+	connection.on("ReceiveMessage", (user, move) => {
+		console.log(`${user} made the move: ${move}`);
+		if (user != connectionId) {
+			decipherHistory(move);
+		}
+	});
 
+	setUpConnection(sessionId)
+});
+/*
 connection.start()
 	.then(() => {
 
-		connection.on("ReceiveMessage", (user, move) => {
-			console.log(`${user} made the move: ${move}`);
-			if (user != connectionId) {
-				decipherHistory(move);
-			}
-		});
+		
 
-		document.getElementById("joinGameButton1").addEventListener("click", () => {
-			sessionId = "1"; // Встановіть свій ID сесії
-			connectionId = "1"; // Встановіть свій ID підключення (userId)
-
-			connection.invoke("JoinGameGroup", sessionId, connectionId)
-				.then(() => {
-
-					// Приєднання до групи успішно
-					console.log("Joined the game group");
-				})
-				.catch((error) => {
-					console.error("Error joining the game group:", error);
-				});
-		});
 
 		document.getElementById("joinGameButton2").addEventListener("click", () => {
+			userId = "2";
+
 			sessionId = "1"; // Встановіть свій ID сесії
-			connectionId = "2"; // Встановіть свій ID підключення (userId)
+			connectionId = userId; // Встановіть свій ID підключення (userId)
 
 			connection.invoke("JoinGameGroup", sessionId, connectionId)
 				.then(() => {
@@ -670,7 +714,7 @@ connection.start()
 					console.error("Error joining the game group:", error);
 				});
 		});
-	});
+	});*/
 
 // const history = "9:13-24 9:26-15 10:33-44 11:66-75 12:73-84";
 // const history = "11:53-64 12:86-75";
