@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -9,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Data
 {
-    public class ApplicationDbContext : DbContext
-    {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options) { }
+    public class ApplicationDbContext : IdentityDbContext<User>
+	{
+		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+			: base(options) { }
 
 
-        public DbSet<User>? Users { get; set; }
+		public DbSet<User>? Users { get; set; }
         public DbSet<UserFriend>? UserFriends { get; set; }
         public DbSet<Session>? Sessions { get; set; }
 
