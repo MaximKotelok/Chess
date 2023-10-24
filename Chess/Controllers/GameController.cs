@@ -13,9 +13,9 @@ namespace Chess.Controllers
         {
             _unitOfWork = unitOfWork;
         }
+
         public IActionResult Index()
         {
-            
             return View();
         }
 

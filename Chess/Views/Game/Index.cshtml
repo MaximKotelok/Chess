@@ -2,37 +2,139 @@
     ViewData["Title"] = "Home Page";
 }
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
-<script>
-    
-    var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+<body id="ht">
+<!-- astea 2 sunt puse ca indexarea claselor sa inceapa de la 1 -->
+<div class="checker white_checker" style="display:none"> </div>
+<div class="checker black_checker" style="display:none"> </div>
 
-connection.on("ReceiveMessage", function (user, message) {
-    // Обробка отриманого повідомлення
-    console.log(user + " says: " + message);
-});
 
-    connection.start().then(function () {
-        console.log("Connected to the hub");
-    }).catch(function (err) {
-        return console.error(err.toString());
-    });
+<div class="square" style="display: none" id ="ht"> </div>
+<div class="black_background" id="black_background"> </div>
 
-    $( document ).ready(function() {
-    alert( "ready!" );
+	<div class="score" id="score">
+		<br>
+	</div>
+<div class="table" id="table">
 
-    $.ajax({
-        url: '/api/sessions/7fg345078g345fg078gh4', 
-        method: 'GET',
-        dataType: 'json',
+	<div class="checker white_checker"> </div>
+	<div class="checker white_checker"> </div>
+	<div class="checker white_checker"> </div>
+	<div class="checker white_checker"> </div>
+	<div class="checker white_checker"> </div>
+	<div class="checker white_checker"> </div>
+	<div class="checker white_checker"> </div>
+	<div class="checker white_checker"> </div>	
+	<div class="checker white_checker"> </div>
+	<div class="checker white_checker"> </div>
+	<div class="checker white_checker"> </div>
+	<div class="checker white_checker"> </div>	
 
-        success: function (data) {
-            alert(JSON.stringify(data));
-        },
-        error: function (xhr, status, error) {
-            alert('Request failed with status: ' + status);
-        }
-    });
-});
-</script>
+	<div class="checker black_checker"> </div>
+	<div class="checker black_checker"> </div>
+	<div class="checker black_checker"> </div>
+	<div class="checker black_checker"> </div>
+	<div class="checker black_checker"> </div>
+	<div class="checker black_checker"> </div>
+	<div class="checker black_checker"> </div>
+	<div class="checker black_checker"> </div>
+	<div class="checker black_checker"> </div>
+	<div class="checker black_checker"> </div>
+	<div class="checker black_checker"> </div>
+	<div class="checker black_checker"> </div>
+
+
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="clear_float"> </div>
+	
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="clear_float"> </div>
+
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="clear_float"> </div>
+
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="clear_float"> </div>
+
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="clear_float"> </div>
+
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="clear_float"> </div>
+
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="clear_float"> </div>
+
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="square white_square"> </div>
+	<div class="square black_square"> </div>
+	<div class="clear_float"> </div>
+
+</div>
+
+	
+<audio id="moveSound">
+	<source src = "sounds/move.mp3"> 
+</audio>
+<audio id="winSound">
+	<source src="sounds/win.mp3">
+</audio>
+</body>
+
+@section Scripts {
+	<script type="text/javascript" src="~/js/check.js"></script>
+}
