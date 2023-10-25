@@ -19,7 +19,7 @@ namespace DataAccess.Data
 
 		public DbSet<User>? Users { get; set; }
         public DbSet<UserFriend>? UserFriends { get; set; }
-        public DbSet<Session>? Sessions { get; set; }
+        public DbSet<Session>? Sessions { get; set; }      
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -35,6 +35,7 @@ namespace DataAccess.Data
             modelBuilder.Entity<UserFriend>()
                 .HasKey(uf => new { uf.SenderUserId, uf.ReceiverUserId });
 
+
             modelBuilder.Entity<UserFriend>()
                 .HasOne(uf => uf.SenderUser)
                 .WithMany(u => u.SendedUserFriends)
@@ -48,9 +49,9 @@ namespace DataAccess.Data
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Session>()
-                .HasOne(s => s.Red)
-                .WithMany(u => u.SessionsAsRed)
-                .HasForeignKey(uf => uf.RedId)
+                .HasOne(s => s.White)
+                .WithMany(u => u.SessionsAsWhite)
+                .HasForeignKey(uf => uf.WhiteId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Session>()

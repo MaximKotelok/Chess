@@ -10,7 +10,7 @@ namespace DataAccess.Repository.IRepository
     {
         IUserRepository? User { get; }
         IUserFriendRepository? UserFriend { get; }
-        ISessionRepository? Session { get; }
+        ISessionRepository? Session { get; }        
         void Save();
 
     }

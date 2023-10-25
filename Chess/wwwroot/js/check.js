@@ -1,8 +1,9 @@
 ﻿
 /*=========variabile globale=========================*/
 var isHistory = false;
-var sessionId = "1";
-var connectionId = "1";
+var sessionId = getIdFromUrl(window.location.href)
+console.log(sessionId);
+var connectionId = getCookie("userId");
 var square_class = document.getElementsByClassName("square");
 var white_checker_class = document.getElementsByClassName("white_checker");
 var black_checker_class = document.getElementsByClassName("black_checker");
@@ -350,6 +351,7 @@ function makeMove(index) {
 		// alert(moveDescription);
 
 		if (!isHistory) {
+			console.log('a');
 			connection.invoke("SendMove", sessionId, connectionId, move)
 				.then(() => {
 					console.log("Move sent");
@@ -612,7 +614,7 @@ function getCookie(cname) {
 }
 
 function setUpConnection(sessionId) {
-	let connectionId = getCookie("userId");
+	
 	connection.invoke("JoinGameGroup", sessionId, connectionId)
 		.then(() => {
 
@@ -660,7 +662,7 @@ document.getElementsByTagName("BODY")[0].onresize = function () {
 }
 
 $(document).ready(function () {
-	let sessionId = getIdFromUrl(window.location.href)
+	
 	$.ajax({
 		url: `/api/sessions?sessionId=${sessionId}`,
 		method: 'GET',

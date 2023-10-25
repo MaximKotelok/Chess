@@ -10,13 +10,15 @@ namespace Models
     {
         public String? Id { get; set; }
         //Host
-        public User Red { get; set; }
-        public String RedId { get; set; }
+        public User White { get; set; }
+        public String WhiteId { get; set; }
         //Guest
         public User Black { get; set; }
         public String BlackId { get; set; }        
         public String Steps { get; set; }
         public bool? IsWhiteWin { get; set; }
+
+        public bool IsWaiting { get; set; }
 
     }
 }

@@ -20,12 +20,14 @@ namespace DataAccess.Repository
 
         public ISessionRepository? Session { get; private set; }
 
+
         public UnitOfWork(ApplicationDbContext db)
         {
             this._db = db;
             User = new UserRepository(db);
             UserFriend = new UserFriendRepository(db);
             Session = new SessionRepository(db);
+            
         }
 
         public void Save()

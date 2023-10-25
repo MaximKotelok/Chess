@@ -10,7 +10,7 @@ namespace Models
         public int Reputation { get; set; }
         public List<UserFriend> SendedUserFriends { get; set; }
         public List<UserFriend> ReceivedUserFriends { get; set; }
-        public List<Session> SessionsAsRed { get; set; }        
+        public List<Session> SessionsAsWhite { get; set; }        
         public List<Session> SessionsAsBlack { get; set; }
 
 

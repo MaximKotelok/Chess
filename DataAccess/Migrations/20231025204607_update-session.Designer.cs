@@ -4,6 +4,7 @@ using DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231025204607_update-session")]
+    partial class updatesession
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -170,19 +173,19 @@ namespace DataAccess.Migrations
                     b.Property<bool?>("IsWhiteWin")
                         .HasColumnType("bit");
 
+                    b.Property<string>("RedId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Steps")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("WhiteId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BlackId");
 
-                    b.HasIndex("WhiteId");
+                    b.HasIndex("RedId");
 
                     b.ToTable("Sessions");
                 });
@@ -332,15 +335,15 @@ namespace DataAccess.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Models.User", "White")
-                        .WithMany("SessionsAsWhite")
-                        .HasForeignKey("WhiteId")
+                    b.HasOne("Models.User", "Red")
+                        .WithMany("SessionsAsRed")
+                        .HasForeignKey("RedId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Black");
 
-                    b.Navigation("White");
+                    b.Navigation("Red");
                 });
 
             modelBuilder.Entity("Models.UserFriend", b =>
@@ -370,7 +373,7 @@ namespace DataAccess.Migrations
 
                     b.Navigation("SessionsAsBlack");
 
-                    b.Navigation("SessionsAsWhite");
+                    b.Navigation("SessionsAsRed");
                 });
 #pragma warning restore 612, 618
         }
