@@ -19,6 +19,8 @@ namespace Chess.Areas.Game.Controllers
 		public IActionResult Index(string id)
 		{
 			var session = _unitOfWork.Session.Get(a => a.Id == id);
+			if(session == null)
+                return Content("Error 404");
 
 			Response.Cookies.Append("whiteId", session.WhiteId);
 			Response.Cookies.Append("blackId", session.BlackId);

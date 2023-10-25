@@ -1,0 +1,22 @@
+﻿@model HistoryViewModel
+
+<div class="container">
+ 
+    @foreach(var item in Model.history)
+    {
+        <div class="card mb-4" style="width: 18rem;">
+            <div class="card-body">
+                    @if(item.WhiteId == Model.userId && item.IsWhiteWin == true){
+                        <h5 class="card-title">Win</h5>
+                    }
+                    else{
+                        <h5 class="card-title">Lose</h5>
+                    }
+                <p class="card-text">Date</p>
+            </div>
+            <div class="card-body">
+                <a class="btn btn-primary" asp-area="Game" asp-controller="History" asp-action="Replay" asp-route-id="@item.Id">Watch Replay</a>
+            </div>
+        </div>
+    }
+</div>
