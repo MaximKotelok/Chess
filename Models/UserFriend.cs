@@ -2,11 +2,12 @@
 {
     public class UserFriend
     {
-        public String FirstUserId { get; set; }
-        public User FirstUser { get; set; }
+        public String SenderUserId { get; set; }
+        public User SenderUser { get; set; }
 
-        public String SecondSecondId { get; set; }
-        public User SecondUser { get; set; }
+        public String ReceiverUserId { get; set; }
+        public User ReceiverUser { get; set; }
+        public bool? IsReceived { get; set; } 
 
 
     }

@@ -8,10 +8,10 @@ namespace Models
 	{        
         
         public int Reputation { get; set; }
-        public List<UserFriend> FirstUserFriends { get; set; }
-        public List<UserFriend> SecondUserFriends { get; set; }
-        public List<Session> FirstSessions { get; set; }        
-        public List<Session> SecondSessions { get; set; }
+        public List<UserFriend> SendedUserFriends { get; set; }
+        public List<UserFriend> ReceivedUserFriends { get; set; }
+        public List<Session> SessionsAsRed { get; set; }        
+        public List<Session> SessionsAsBlack { get; set; }
 
 
     }

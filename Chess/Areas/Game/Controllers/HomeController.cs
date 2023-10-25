@@ -11,6 +11,7 @@ namespace Chess.Areas.Game.Controllers
 
         public IActionResult Index()
         {
+            TempData["Success"] = "Added To Compare List Successfully";
             return View();
         }
 

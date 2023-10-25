@@ -1,0 +1,46 @@
+﻿@using Models.ViewModels;
+@model UserFriendViewModel
+
+<link rel="stylesheet" href="~/css/friend.css" />
+
+
+<div class="friend-requests">
+    @{
+        foreach (var request in Model.Requests)
+        {
+            <div class="friend-requests" data-id="@request.Id">
+                <div class="friend-box">
+
+                    <div class="name-box">@request.UserName</div>
+
+                    <div class="request-btn-row" data-username="redlion327">
+                        <form asp-area="Game" asp-controller="Friends" asp-action="Accept" asp-route-id="@request.Id">
+                            <button type="submit">Accept</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        }
+    }
+</div>
+
+<div class="friend-requests">
+@{
+	foreach(var friend in Model.Friends)
+	{
+	<div class="friend-requests" data-id="@friend.Id">
+        <div class="friend-box">
+        
+        <div class="name-box">@friend.UserName</div>
+        
+        <div class="request-btn-row" data-username="redlion327">
+            <a class="friend-request accept-request" asp-area="Game" asp-controller="Friends" asp-action="Profile" asp-route-id="@friend.Id">Open Profile</a>
+            <button class="friend-request decline-request" onclick="remove(@friend.Id)">Remove From Friends</button>
+        </div>
+        </div>
+    </div>
+
+	}
+}
+</div>

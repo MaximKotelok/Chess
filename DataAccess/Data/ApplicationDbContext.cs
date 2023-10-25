@@ -33,29 +33,29 @@ namespace DataAccess.Data
                 .HasKey(s => s.Id);
 
             modelBuilder.Entity<UserFriend>()
-                .HasKey(uf => new { uf.FirstUserId, uf.SecondSecondId });
+                .HasKey(uf => new { uf.SenderUserId, uf.ReceiverUserId });
 
             modelBuilder.Entity<UserFriend>()
-                .HasOne(uf => uf.FirstUser)
-                .WithMany(u => u.FirstUserFriends)
-                .HasForeignKey(uf => uf.FirstUserId)
+                .HasOne(uf => uf.SenderUser)
+                .WithMany(u => u.SendedUserFriends)
+                .HasForeignKey(uf => uf.SenderUserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<UserFriend>()
-                .HasOne(uf => uf.SecondUser)
-                .WithMany(u => u.SecondUserFriends)
-                .HasForeignKey(uf => uf.SecondSecondId)
+                .HasOne(uf => uf.ReceiverUser)
+                .WithMany(u => u.ReceivedUserFriends)
+                .HasForeignKey(uf => uf.ReceiverUserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Session>()
-                .HasOne(s => s.White)
-                .WithMany(u => u.FirstSessions)
-                .HasForeignKey(uf => uf.WhiteId)
+                .HasOne(s => s.Red)
+                .WithMany(u => u.SessionsAsRed)
+                .HasForeignKey(uf => uf.RedId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Session>()
                 .HasOne(s => s.Black)
-                .WithMany(u => u.SecondSessions)
+                .WithMany(u => u.SessionsAsBlack)
                 .HasForeignKey(uf => uf.BlackId)
                 .OnDelete(DeleteBehavior.NoAction);
 
