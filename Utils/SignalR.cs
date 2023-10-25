@@ -1,5 +1,6 @@
 ﻿using DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.IdentityModel.Tokens;
 using System.Text.RegularExpressions;
 
 namespace Utils
@@ -19,8 +20,13 @@ namespace Utils
             var session = _unitOfWork?.Session?.Get(a => a.Id == sessionId);
             if (session != null)
             {
-                session.Steps = $"{session.Steps} {move}";
-                _unitOfWork?.Session?.Update(session);
+				if (String.IsNullOrEmpty(session.Steps))
+                    session.Steps = move;
+                else
+					session.Steps = $"{session.Steps} {move}";
+
+
+				_unitOfWork?.Session?.Update(session);
                 _unitOfWork?.Save();
                 
                 await SendMessageToGroup(sessionId, user, move);

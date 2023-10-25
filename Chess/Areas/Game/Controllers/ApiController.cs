@@ -9,10 +9,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Chess.Areas.Game.Controllers
 {
-
-    [Area("Game")]
     [ApiController]
-    [Route("/Game/api")]
+    [Route("/api")]
     public class ApiController : Controller
     {
             
