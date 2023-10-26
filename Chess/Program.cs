@@ -24,7 +24,6 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 });
 
 
-
 builder.Services.AddSignalR();  
 
 builder.Services.AddDbContext<ApplicationDbContext>(

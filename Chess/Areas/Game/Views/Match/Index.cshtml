@@ -1,9 +1,16 @@
-﻿@model GameIndexViewModel
+﻿@using Models.ViewModels
+@model GameIndexViewModel
 
 
 @foreach(var friend in Model.Friends){
-	<form method="post" asp-area="Game" asp-controller="Match" asp-action="CreateMatch" asp-route-oponentId="@friend.Id">
-		<button type="submit">Invite @friend.UserName</button>
-	</form>
+	@if(friend.MatchId == null)
+	{
+		<form method="post" asp-area="Game" asp-controller="Match" asp-action="CreateMatch" asp-route-oponentId="@friend.User.Id">
+			<button type="submit">Invite @friend.User.UserName</button>
+		</form>
+	}else{
+		<a asp-area="Game" asp-controller="Match" asp-action="GameLobby" asp-route-id="@friend.MatchId">Join to @friend.User.UserName</a>
+	}
+
 }
 

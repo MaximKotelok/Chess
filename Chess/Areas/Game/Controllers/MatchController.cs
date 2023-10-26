@@ -43,7 +43,34 @@ namespace Chess.Areas.Game.Controllers
                         return a.ReceiverUserId;
                 }).ToList();
 
-            var friends = friendsIds.Select(a => _unitOfWork.User.Get(b => b.Id == a)).ToList();
+            var friends = friendsIds
+                .Select(a => _unitOfWork.User.Get(b => b.Id == a))
+                .Select(a=> {
+                    string? matchId = null;
+                    var matches = _unitOfWork.Session
+                    .GetAll(b => (b.BlackId == a.Id && b.WhiteId == userId) ||
+                    (b.BlackId == userId && b.WhiteId == a.Id)).ToList();
+
+                    if(matches != null && matches.Count != 0)
+                    {
+                        var activeMatches = matches.Where(b => b.IsWhiteWin == null).ToList();
+                        if (activeMatches != null && activeMatches.Count != 0)
+                        {
+                            matchId = activeMatches.First().Id;
+                        }
+                            
+                    }
+
+                    
+
+
+
+					return new UserWithMatchId { User = a, MatchId = matchId };
+                })
+                .ToList();
+
+            
+
 
             return View(new GameIndexViewModel { Friends=friends, UserId=userId });
 		}

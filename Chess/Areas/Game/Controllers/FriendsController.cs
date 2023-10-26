@@ -66,7 +66,7 @@ namespace Chess.Areas.Game.Controllers
             if (userFriend == null)
                 state = RequestState.NOTHING;
             else if (userFriend.IsReceived == null || userFriend.IsReceived == false)
-                state = RequestState.NOTHING;
+                state = RequestState.SENDED;
             else
                 state = RequestState.FRIENDS;
 

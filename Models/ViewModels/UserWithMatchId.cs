@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Models.ViewModels
 {
-    public class GameIndexViewModel
-    {
-        public String UserId { get; set; }
-        public List<UserWithMatchId> Friends { get; set; }
-    }
+	public class UserWithMatchId
+	{
+		public User User { get; set; }
+		public string? MatchId { get; set; }
+	}
 }
