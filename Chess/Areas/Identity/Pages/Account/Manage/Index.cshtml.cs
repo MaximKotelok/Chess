@@ -6,10 +6,12 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Models;
+using Utils;
 
 namespace Chess.Areas.Identity.Pages.Account.Manage
 {
@@ -17,20 +19,22 @@ namespace Chess.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-
+        private readonly IWebHostEnvironment _webHostEnvironment;
         public IndexModel(
             UserManager<User> userManager,
-            SignInManager<User> signInManager)
+            SignInManager<User> signInManager,
+            IWebHostEnvironment webHostEnvironment)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public string Username { get; set; }
+        public string Email { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -56,21 +60,23 @@ namespace Chess.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
+            [Display(Name = "Avatar")]
+            public IFormFile AvatarFile { get; set; }
+            public string Avatar { get; set; }
+            public string Username { get; set; }
+
         }
 
         private async Task LoadAsync(User user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
-            Username = userName;
-
+            Email = await _userManager.GetEmailAsync(user);
+            
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                Username = userName,
+                Avatar = user.AvatarPath
             };
         }
 
@@ -100,17 +106,39 @@ namespace Chess.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
+            if(Input.Username != user.UserName)
             {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
+                user.UserName = Input.Username;
+
+            }
+            
+            if (Input.AvatarFile != null)
+            {
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(Input.AvatarFile.FileName);
+
+                string imageFolderPath = Path.Combine(wwwRootPath, SD.AvatarsPath);
+                string imagePath = Path.Combine(imageFolderPath, fileName);
+
+
+                if (!string.IsNullOrEmpty(user.AvatarPath) && user.AvatarPath != SD.StandartIcon)
                 {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
+                    var oldImagePath = Path.Combine(wwwRootPath, user.AvatarPath.Trim('\\'));
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+
                 }
+                using (var fileStream = new FileStream(imagePath, FileMode.Create))
+                {
+                    await Input.AvatarFile.CopyToAsync(fileStream);
+                }
+
+                user.AvatarPath = @"\" + SD.AvatarsPath + @"\" + fileName;
             }
 
+            await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
