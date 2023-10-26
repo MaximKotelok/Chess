@@ -49,8 +49,100 @@ namespace Chess.Areas.Game.Controllers
             return RedirectToAction(nameof(Index));
 
 
+        }  
+        [HttpPost]
+        public IActionResult RemoveFriend(string id)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var userFriend = _unitOfWork.UserFriend.Get(a => (
+                    (a.SenderUserId == userId && a.ReceiverUserId == id) ||
+                    (a.SenderUserId == id && a.ReceiverUserId == userId)
+                ));
+            if (userFriend != null)
+            {
+
+                _unitOfWork.UserFriend.Remove(userFriend);
+                _unitOfWork.Save();
+                TempData["Warning"] = "Friend removed";
+            }
+            else
+            {
+                TempData["Warning"] = "Something wrong";
+            }
+
+            return RedirectToAction(nameof(Index));
+
         }
 
+        [HttpPost]
+        public IActionResult Reject(string id)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var userFriend = _unitOfWork.UserFriend.Get(a => (
+                    (a.SenderUserId == userId && a.ReceiverUserId == id) ||
+                    (a.SenderUserId == id && a.ReceiverUserId == userId)
+                ));
+            if (userFriend != null)
+            {
+                if(userFriend.IsReceived == null || userFriend.IsReceived != true)
+                {                
+                    _unitOfWork.UserFriend.Remove(userFriend);
+                    _unitOfWork.Save();
+                    TempData["Succcess"] = "Friend request rejected";
+                }
+                else
+                {
+                    TempData["Warning"] = "This user is already your friend";
+                }
+
+
+            }
+            else
+            {
+                TempData["Warning"] = "Something wrong";
+            }
+
+            return RedirectToAction(nameof(Index));
+
+        }
+
+        [HttpPost]
+        public IActionResult Recall(string id)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var userFriend = _unitOfWork.UserFriend.Get(a => (
+                    (a.SenderUserId == userId && a.ReceiverUserId == id) ||
+                    (a.SenderUserId == id && a.ReceiverUserId == userId)
+                ));
+            if (userFriend != null)
+            {
+                if (userFriend.IsReceived == null || userFriend.IsReceived != true)
+                {
+                    _unitOfWork.UserFriend.Remove(userFriend);
+                    _unitOfWork.Save();
+                    TempData["Succcess"] = "Friend request recalled";
+                }
+                else
+                {
+                    TempData["Warning"] = "Something wrong";
+                }
+
+
+            }
+            else
+            {
+                TempData["Warning"] = "Something wrong";
+            }
+
+            return RedirectToAction(nameof(Index));
+
+        }
 
         public IActionResult Profile(string id)
         {
@@ -93,36 +185,7 @@ namespace Chess.Areas.Game.Controllers
         }
         public IActionResult Index()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var friendsIds = _unitOfWork.UserFriend.GetAll(
-                a => (a.SenderUserId == userId || a.ReceiverUserId == userId)
-                ).Select(a =>
-                {
-                    RequestState state = RequestState.FRIENDS;
-                    if (a.SenderUserId != userId)
-                    {
-
-                        if (a.IsReceived == null || a.IsReceived == false)
-                            state = RequestState.SENDED;
-
-                        return new { id = a.SenderUserId, state };
-                    }
-                    else
-                    {
-                        if (a.IsReceived == null || a.IsReceived == false)
-                            state = RequestState.NOTHING;
-                        return new { id = a.ReceiverUserId, state };
-                    }
-                }).ToList();
-
-            var friends = friendsIds.Where(a => a.state == RequestState.FRIENDS)
-                            .Select(a => _unitOfWork.User.Get(b => b.Id == a.id)).ToList();
-            var requests = friendsIds.Where(a => a.state == RequestState.SENDED)
-                            .Select(a => _unitOfWork.User.Get(b => b.Id == a.id)).ToList();
-
-
-            return View(new UserFriendViewModel { UserId = userId, Friends = friends, Requests = requests });
+			return View();
         }
 
         [HttpPost]

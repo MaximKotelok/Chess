@@ -1,51 +1,46 @@
 ﻿@using Models.ViewModels;
-@model UserFriendViewModel
+
 
 <link rel="stylesheet" href="~/css/friend.css" />
 
+<div class="ex-tab container">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" id="friends-head" href="#friends-tab">Friends</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" id="received-head" href="#received-tab">Received Requests</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" id="sended-head" href="#sended-tab">Sended Requests</a>
+        </li>        
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#search-tab">Find Users</a>
+        </li>
+    </ul>
 
-<div class="friend-requests">
-    @{
-        foreach (var request in Model.Requests)
-        {
-            <div>@request.UserName</div>
-            <form asp-area="Game" asp-controller="Friends" asp-action="Accept" asp-route-id="@request.Id">
-                <button type="submit">Accept</button>
-            </form>
+    <div class="tab-content">
+        <div class="tab-pane active" id="friends-tab">
 
-        }
-    }
+        </div>
+        <div class="tab-pane" id="received-tab">
+			
+        </div>
+        <div class="tab-pane" id="sended-tab">
+                        
+        </div>        
+        <div class="tab-pane" id="search-tab">
+			<input id="usernameInput" />
+
+			<div id="resultContainer" class="d-flex flex-column h-100"></div>
+
+
+        </div>
+    </div>
 </div>
-
-<div class="friend-requests">
-@{
-	foreach(var friend in Model.Friends)
-	{
-            <div>@friend.UserName</div>
-            <a asp-area="Game" asp-controller="Friends" asp-action="Profile" asp-route-id="@friend.Id">Open Profile</a>
-
-	}
-}
-</div>
-
-
-<div class="friend-requests">
-@{
-	foreach(var friend in Model.Friends)
-	{
-            <div>@friend.UserName</div>
-            <a asp-area="Game" asp-controller="Friends" asp-action="Profile" asp-route-id="@friend.Id">Open Profile</a>
-
-	}
-}
-</div>
-
-<input id="usernameInput" />
-
-<div id="resultContainer" class="d-flex flex-column"></div>
 
 
 
 @section Scripts{
-    <script src="~/js/friendSearch.js"></script>
+    <script src="~/js/friends.js"></script>
 }

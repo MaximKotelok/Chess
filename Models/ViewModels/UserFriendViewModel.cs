@@ -8,10 +8,10 @@ namespace Models.ViewModels
 {
     public class UserFriendViewModel
     {
-        public String UserId { get; set; }
-        public List<User> Friends { get; set; }
+        public string Id { get; set; }
+        public string AvatarPath { get; set; }
+        public string UserName { get; set; }
 
-		public List<User> Requests { get; set; }
 
-	}
+    }
 }
