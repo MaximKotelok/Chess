@@ -72,6 +72,8 @@ namespace Chess.Areas.Game.Controllers
 		public IActionResult Play(string id)
 		{
 			var session = _unitOfWork.Session.Get(a => a.Id == id);
+			if(session == null)
+                return Content("Error 404");
 
             if(session != null || session.IsWaiting != true)
             {            

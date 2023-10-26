@@ -1,9 +1,8 @@
 ﻿
 /*=========variabile globale=========================*/
 var isHistory = false;
-var sessionId = getIdFromUrl(window.location.href)
-console.log(sessionId);
-var connectionId = getCookie("userId");
+var sessionId = "1";
+var connectionId = "1";
 var square_class = document.getElementsByClassName("square");
 var white_checker_class = document.getElementsByClassName("white_checker");
 var black_checker_class = document.getElementsByClassName("black_checker");
@@ -38,9 +37,6 @@ var mustAttack = false;
 var multiplier = 1 // 2 daca face saritura 1 in caz contrat
 
 var tableLimit, reverse_tableLimit, moveUpLeft, moveUpRight, moveDownLeft, moveDownRight, tableLimitLeft, tableLimitRight;
-
-const connection = new signalR.HubConnectionBuilder().withUrl("/signalr").build();
-
 
 /*================================*/
 getDimension();
@@ -350,16 +346,6 @@ function makeMove(index) {
 		const move = `${selectedPieceindex}:${fromX}${fromY}-${toX}${toY}`;
 		// alert(moveDescription);
 
-		if (!isHistory) {
-			console.log('a');
-			connection.invoke("SendMove", sessionId, connectionId, move)
-				.then(() => {
-					console.log("Move sent");
-				})
-				.catch((error) => {
-					console.error("Error sending the move:", error);
-				});
-		}
 		//playSound(moveSound);
 		anotherMove = undefined;
 		if (mustAttack) {
@@ -545,58 +531,56 @@ function getDimension() {
 		|| document.documentElement.clientWidth
 		|| document.body.clientWidth;
 }
-
+function delay(time) {
+	return new Promise(resolve => setTimeout(resolve, time));
+}
 
 function decipherHistory(history) {
-	if (history == null) 
-		return;
+	if (history == null) return;
 
 	const moves = history.split(' ');
 
-	for (const move of moves) {
-		isHistory = true;
-		// Split each move based on colons to separate player and move
-		const [id, moveDetails] = move.split(':');
+	let index = 0;
 
-		// Split moveDetails based on the dash symbol to get begin and last positions
-		const [begin, last] = moveDetails.split('-');
+	function processNextMove() {
+		if (index < moves.length) {
+			const move = moves[index];
+			isHistory = true;
 
-		// Extract individual coordinates
-		const [beginX, beginY] = [begin[0], begin[1]];
-		const [lastX, lastY] = [last[0], last[1]];
+			const [id, moveDetails] = move.split(':');
+			const [begin, last] = moveDetails.split('-');
+			const [beginX, beginY] = [begin[0], begin[1]];
+			const [lastX, lastY] = [last[0], last[1]];
 
+			let nSquare = ((lastY - 1) * 8) + parseInt(lastX);
 
-		/*alert(`Player: ${id}, BeginX: ${beginX}, BeginY: ${beginY}, LastX: ${lastX}, LastY: ${lastY}`);*/
-		let nSquare = ((lastY - 1) * 8) + parseInt(lastX);
+			let checker = document.getElementsByClassName(history_checker)[id];
 
-		let checker = document.getElementsByClassName(history_checker)[id];
-		showMoves(checker);
-		makeMove(nSquare);
-		isHistory = false;
+			showMoves(checker);
+			makeMove(nSquare);
+			isHistory = false;
 
+			index++; // Move to the next move
+			setTimeout(processNextMove, 1000); // Schedule the next move after a 1-second delay
+		}
 	}
-}
 
-function selectSide() {
+	processNextMove(); // Start processing the first move
+}
+function nullSide() {
 	let whiteId = getCookie("whiteId");
 	let blackId = getCookie("blackId");
 	let userId = getCookie("userId");
 
-	if (userId == whiteId) {
-		b_checker.forEach(x => {
-			x.id.onclick = null
-		})
+	b_checker.forEach(x => {
+		x.id.onclick = null
+	})
 
-	} else if (userId == blackId) { 
-		w_checker.forEach(x => {
-			x.id.onclick = null
-		})
-	} else {
-		alert("Cheater")
-		return;
-	}
-
+	w_checker.forEach(x => {
+		x.id.onclick = null
+	})
 }
+
 function getCookie(cname) {
 	let name = cname + "=";
 	let decodedCookie = decodeURIComponent(document.cookie);
@@ -612,20 +596,6 @@ function getCookie(cname) {
 	}
 	return "";
 }
-
-function setUpConnection(sessionId) {
-	
-	connection.invoke("JoinGameGroup", sessionId, connectionId)
-		.then(() => {
-
-			// Приєднання до групи успішно
-			console.log("Joined the game group");
-		})
-		.catch((error) => {
-			console.error("Error joining the game group:", error);
-		});
-}
-
 
 function getIdFromUrl(url) {
 	const nUrl = new URL(url);
@@ -662,7 +632,7 @@ document.getElementsByTagName("BODY")[0].onresize = function () {
 }
 
 $(document).ready(function () {
-	
+	let sessionId = getIdFromUrl(window.location.href)
 	$.ajax({
 		url: `/api/sessions?sessionId=${sessionId}`,
 		method: 'GET',
@@ -678,49 +648,7 @@ $(document).ready(function () {
 			alert('Request failed with status: ' + status);
 		}
 	});
-
-	selectSide();
-	
+	nullSide();
 });
-
-connection.start().then(() => {
-
-	connection.on("ReceiveMessage", (user, move) => {
-		console.log(`${user} made the move: ${move}`);
-		if (user != connectionId) {
-			decipherHistory(move);
-		}
-	});
-
-	setUpConnection(sessionId)
-});
-/*
-connection.start()
-	.then(() => {
-
-		
-
-
-		document.getElementById("joinGameButton2").addEventListener("click", () => {
-			userId = "2";
-
-			sessionId = "1"; // Встановіть свій ID сесії
-			connectionId = userId; // Встановіть свій ID підключення (userId)
-
-			connection.invoke("JoinGameGroup", sessionId, connectionId)
-				.then(() => {
-					
-					console.log("Joined the game group");
-				})
-				.catch((error) => {
-					console.error("Error joining the game group:", error);
-				});
-		});
-	});*/
-
-// const history = "9:13-24 9:26-15 10:33-44 11:66-75 12:73-84";
-// const history = "11:53-64 12:86-75";
-// decipherHistory(history);
-
 
 
