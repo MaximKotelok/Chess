@@ -3,6 +3,9 @@
 <div class="text-center">
 <img src="@Model.User.AvatarPath" alt="Avatar" class="profile-photo rounded-circle" height="150" />
 <h1>@Model.User.UserName</h1>
+
+@Model.State.ToString()
+
 @if(Model.State == RequestState.NOTHING)
 {
 	<form method="post" asp-area="Game" asp-controller="Friends" asp-action="AddFriend" asp-route-id="@Model.User.Id">

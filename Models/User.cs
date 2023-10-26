@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace Models
 {
@@ -10,9 +11,13 @@ namespace Models
         public string AvatarPath { get; set; }
         
         public int Reputation { get; set; }
+        [JsonIgnore]
         public List<UserFriend> SendedUserFriends { get; set; }
+        [JsonIgnore]
         public List<UserFriend> ReceivedUserFriends { get; set; }
-        public List<Session> SessionsAsWhite { get; set; }        
+        [JsonIgnore]
+        public List<Session> SessionsAsWhite { get; set; }
+        [JsonIgnore]
         public List<Session> SessionsAsBlack { get; set; }
 
 
