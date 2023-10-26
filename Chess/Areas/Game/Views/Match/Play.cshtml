@@ -13,7 +13,7 @@
 	<div class="black_background" id="black_background"> </div>
 
 	<div class="score" id="score">
-		<br>
+		
 	</div>
 	<div class="table" id="table">
 
@@ -125,7 +125,13 @@
 		<div class="clear_float"> </div>
 
 	</div>
-
+	<div class="container mb-4" style="position:relative; height:100px">
+		<p id="playerMoveText"></p>
+		<div class="move_checker move_white_checker" id="moveDisplay"> </div>
+	</div>
+	<div class="container hidden" id="exitButton">
+		<a class="btn btn-danger btn-lg" asp-area="Game" asp-controller="Match" asp-action="Index">Exit</a>
+	</div>
 	<audio id="moveSound">
 		<source src="sounds/move.mp3">
 	</audio>

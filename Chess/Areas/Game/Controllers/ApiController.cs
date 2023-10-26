@@ -1,4 +1,5 @@
-﻿using DataAccess.Repository.IRepository;
+﻿using DataAccess.Repository;
+using DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Models;
@@ -36,6 +37,15 @@ namespace Chess.Areas.Game.Controllers
             
         }
 
+        [HttpPost("setWinner")]
+        public async void SetWinner([FromBody] WinnerData data)
+        {
+			var session = _unitOfWork.Session.Get(a => a.Id == data.SessionId);
+            session.IsWhiteWin = data.IsWhiteWin;
+            _unitOfWork.Session.Update(session);
+			_unitOfWork.Save();
+		}
 
-    }
+
+	}
 }

@@ -84,7 +84,22 @@ body, html {
     transition: 0.3s ease-in-out;
 }
 
-/*.black_background {
+.move_white_checker {
+    background: #CC0000;
+}
+.move_black_checker {
+    background: #00001F;
+}
+.move_checker {
+    top: 10px;
+    left: 150px;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    position: absolute;
+    border: 4px solid white;
+}
+    /*.black_background {
     position: fixed;
     width: 200%;
     height: 200%;
@@ -93,6 +108,9 @@ body, html {
     z-index: 7;
     display: none;
 }*/
+    .hidden {
+    display: none;
+}
 
 @media only screen and (max-width : 640px) {
     .table {
