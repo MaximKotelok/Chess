@@ -1,11 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Models
 {
     public class User : IdentityUser
-	{        
+	{
+        public string AvatarPath { get; set; }
         
         public int Reputation { get; set; }
         public List<UserFriend> SendedUserFriends { get; set; }

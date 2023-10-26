@@ -27,3 +27,25 @@
 	}
 }
 </div>
+
+
+<div class="friend-requests">
+@{
+	foreach(var friend in Model.Friends)
+	{
+            <div>@friend.UserName</div>
+            <a asp-area="Game" asp-controller="Friends" asp-action="Profile" asp-route-id="@friend.Id">Open Profile</a>
+
+	}
+}
+</div>
+
+<input id="usernameInput" />
+
+<div id="resultContainer" class="d-flex flex-column"></div>
+
+
+
+@section Scripts{
+    <script src="~/js/friendSearch.js"></script>
+}

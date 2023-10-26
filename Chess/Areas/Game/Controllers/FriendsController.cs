@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.ViewModels;
+using Newtonsoft.Json;
 using System.Security.Claims;
 
 namespace Chess.Areas.Game.Controllers
@@ -20,20 +21,20 @@ namespace Chess.Areas.Game.Controllers
             )
         {
             _unitOfWork = unitOfWork;
-            
+
         }
 
         [HttpPost]
         public IActionResult Accept(string id)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;            
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var userFriend = _unitOfWork.UserFriend.Get(a => (
                     (a.SenderUserId == userId && a.ReceiverUserId == id) ||
                     (a.SenderUserId == id && a.ReceiverUserId == userId)
                 ));
-            if(userFriend != null)
+            if (userFriend != null)
             {
                 userFriend.IsReceived = true;
                 _unitOfWork.UserFriend.Update(userFriend);
@@ -46,7 +47,7 @@ namespace Chess.Areas.Game.Controllers
             }
 
             return RedirectToAction(nameof(Index));
-            
+
 
         }
 
@@ -55,25 +56,37 @@ namespace Chess.Areas.Game.Controllers
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var profileUser = _unitOfWork.User.Get(a => a.Id == id);
-
-            var userFriend = _unitOfWork.UserFriend.Get(a => (
-                    (a.SenderUserId == userId && a.ReceiverUserId == id) ||
-                    (a.SenderUserId == id && a.ReceiverUserId == userId)
-                ));
-
+            User profileUser;
             RequestState state;
-            if (userFriend == null)
-                state = RequestState.NOTHING;
-            else if (userFriend.IsReceived == null || userFriend.IsReceived == false)
-                state = RequestState.SENDED;
-            else
-                state = RequestState.FRIENDS;
+            if (userId != id)
+            {
+                profileUser = _unitOfWork.User.Get(a => a.Id == id);
 
-            ProfileViewModel model = new ProfileViewModel {
+
+                var userFriend = _unitOfWork.UserFriend.Get(a => (
+                        (a.SenderUserId == userId && a.ReceiverUserId == id) ||
+                        (a.SenderUserId == id && a.ReceiverUserId == userId)
+                    ));
+
+
+                if (userFriend == null)
+                    state = RequestState.NOTHING;
+                else if (userFriend.IsReceived == null || userFriend.IsReceived == false)
+                    state = RequestState.SENDED;
+                else
+                    state = RequestState.FRIENDS;
+            }
+            else
+            {
+                profileUser = _unitOfWork.User.Get(a => a.Id == userId);
+                state = RequestState.DENIED;
+
+            }
+            ProfileViewModel model = new ProfileViewModel
+            {
                 User = profileUser,
                 State = state
-                };
+            };
 
 
             return View(model);
@@ -83,8 +96,9 @@ namespace Chess.Areas.Game.Controllers
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var friendsIds = _unitOfWork.UserFriend.GetAll(
-                a=> (a.SenderUserId == userId || a.ReceiverUserId == userId)
-                ).Select(a=> {
+                a => (a.SenderUserId == userId || a.ReceiverUserId == userId)
+                ).Select(a =>
+                {
                     RequestState state = RequestState.FRIENDS;
                     if (a.SenderUserId != userId)
                     {
@@ -92,23 +106,23 @@ namespace Chess.Areas.Game.Controllers
                         if (a.IsReceived == null || a.IsReceived == false)
                             state = RequestState.SENDED;
 
-                        return new {id= a.SenderUserId, state};
+                        return new { id = a.SenderUserId, state };
                     }
                     else
                     {
                         if (a.IsReceived == null || a.IsReceived == false)
                             state = RequestState.NOTHING;
-                        return new {id= a.ReceiverUserId, state };
+                        return new { id = a.ReceiverUserId, state };
                     }
                 }).ToList();
 
-            var friends = friendsIds.Where(a=>a.state == RequestState.FRIENDS)
+            var friends = friendsIds.Where(a => a.state == RequestState.FRIENDS)
                             .Select(a => _unitOfWork.User.Get(b => b.Id == a.id)).ToList();
             var requests = friendsIds.Where(a => a.state == RequestState.SENDED)
                             .Select(a => _unitOfWork.User.Get(b => b.Id == a.id)).ToList();
 
 
-            return View(new UserFriendViewModel { UserId=userId, Friends = friends, Requests=requests });
+            return View(new UserFriendViewModel { UserId = userId, Friends = friends, Requests = requests });
         }
 
         [HttpPost]
@@ -122,14 +136,14 @@ namespace Chess.Areas.Game.Controllers
                     (a.SenderUserId == id && a.ReceiverUserId == userId)
                 ));
 
-            if(friend == null)
+            if (friend == null)
             {
                 friend = new UserFriend { SenderUserId = userId, ReceiverUserId = id };
                 _unitOfWork.UserFriend.Add(friend);
                 _unitOfWork.Save();
                 TempData["Success"] = "Request sended";
             }
-            else if(friend.IsReceived == null || friend.IsReceived == false)
+            else if (friend.IsReceived == null || friend.IsReceived == false)
             {
                 TempData["Warning"] = "You have already sent a request";
             }
@@ -139,7 +153,10 @@ namespace Chess.Areas.Game.Controllers
             }
 
 
-            return RedirectToAction(nameof(Profile), new {id=id});
+            return RedirectToAction(nameof(Profile), new { id = id });
         }
-    }
+
+
+        
+	}
 }

@@ -22,6 +22,21 @@ namespace Chess.Areas.Game.Controllers
             }
 
 
+        [HttpGet("GetUsersByUsername")]
+        public IActionResult GetUsersByUsername(string username)
+        {
+
+            List<User> data = new List<User>();
+            if (!System.String.IsNullOrEmpty(username))
+                data = _unitOfWork.User.GetAll(a => a.UserName.StartsWith(username)).ToList();
+
+            var result = JsonConvert.SerializeObject(data);
+
+            return Json(result);
+
+
+        }
+
         [HttpGet("sessions")]
         public async Task<IActionResult> GetSessionData(string sessionId)
         {

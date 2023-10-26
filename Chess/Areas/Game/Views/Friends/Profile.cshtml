@@ -1,9 +1,12 @@
 ﻿@model ProfileViewModel
 
-<h1 class="text-center">@Model.User.UserName</h1>
+<div class="text-center">
+<img src="@Model.User.AvatarPath" alt="Avatar" class="profile-photo rounded-circle" height="150" />
+<h1>@Model.User.UserName</h1>
 @if(Model.State == RequestState.NOTHING)
 {
 	<form method="post" asp-area="Game" asp-controller="Friends" asp-action="AddFriend" asp-route-id="@Model.User.Id">
 		<button type="submit">Add to friends</button>
 	</form>
 }
+</div>
