@@ -26,7 +26,9 @@ namespace Chess.Areas.Game.Controllers
             Response.Cookies.Append("userId", userId);
 
             HistoryViewModel viewModel = new HistoryViewModel();
-            viewModel.history = _unitOfWork.Session.GetAll(x => (x.BlackId == userId || x.WhiteId == userId) && x.IsWhiteWin != null).ToList();
+            viewModel.history = _unitOfWork.Session.GetAll(x => (x.BlackId == userId || x.WhiteId == userId) && x.IsWhiteWin != null)
+                .OrderBy(x => x.BeginOfGame)
+                .ToList();
             viewModel.userId = userId;
 
             return View(viewModel);

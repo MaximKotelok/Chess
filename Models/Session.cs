@@ -16,6 +16,7 @@ namespace Models
         public User Black { get; set; }
         public String BlackId { get; set; }        
         public String Steps { get; set; }
+        public DateTime? BeginOfGame { get; set; }
         public bool? IsWhiteWin { get; set; }
 
         public bool IsWaiting { get; set; }

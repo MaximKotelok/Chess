@@ -56,13 +56,15 @@ namespace Chess.Areas.Game.Controllers
         }
 
         [HttpPost("setWinner")]
-        public async void SetWinner([FromBody] WinnerData data)
+        public async Task<IActionResult> SetWinner([FromBody] WinnerData data)
         {
 			var session = _unitOfWork.Session.Get(a => a.Id == data.SessionId);
             session.IsWhiteWin = data.IsWhiteWin;
             _unitOfWork.Session.Update(session);
 			_unitOfWork.Save();
-		}
+
+            return Json("{status: 'ok'}"); ;
+        }
 
 
 	}

@@ -3,7 +3,7 @@
 var isHistory = false;
 var isWhitePlayer = false;
 var isWhitePlayerMove = true;
-var sessionId = getIdFromUrl(window.location.href)
+var sessionId = getIdFromUrl()
 console.log(sessionId);
 var connectionId = getCookie("userId");
 var square_class = document.getElementsByClassName("square");
@@ -347,16 +347,6 @@ function makeMove(index) {
 		const move = `${selectedPieceindex}:${fromX}${fromY}-${toX}${toY}`;
 		// alert(moveDescription);
 
-		if (!isHistory) {
-			console.log('a');
-			connection.invoke("SendMove", sessionId, connectionId, move)
-				.then(() => {
-					console.log("Move sent");
-				})
-				.catch((error) => {
-					console.error("Error sending the move:", error);
-				});
-		}
 		//playSound(moveSound);
 		anotherMove = undefined;
 		if (mustAttack) {
@@ -368,12 +358,19 @@ function makeMove(index) {
 		}
 		else {
 			oneMove = undefined;
-			changeTurns(the_checker[1]);
-			gameOver = checkIfLost();
-			if (gameOver) { setTimeout(declareWinner(), 3000); return false };
-			gameOver = checkForMoves();
-			if (gameOver) { setTimeout(declareWinner(), 3000); return false };
+			changeTurns(the_checker[1]);	
 		}
+
+		if (!isHistory) {
+			connection.invoke("SendMove", sessionId, connectionId, move)
+				.then(() => {
+					checkWinAfterMove();
+				})
+				.catch((error) => {
+					console.error("Error sending the move:", error);
+				});
+		}
+
 		selectedPieceindex = null;
 		selectedPiece = null;
 	}
@@ -549,6 +546,13 @@ function checkIfLost() {
 	return true;
 }
 
+function checkWinAfterMove() {
+	gameOver = checkIfLost();
+	if (gameOver) { setTimeout(declareWinner(), 3000); return false };
+	gameOver = checkForMoves();
+	if (gameOver) { setTimeout(declareWinner(), 3000); return false };
+}
+
 function checkForMoves() {
 	var i;
 	for (i = 1; i <= 12; i++)
@@ -565,7 +569,7 @@ function declareWinner() {
 	let isWhiteWin = false;
 
 	score.style.display = "block";
-	0
+	
 	if (the_checker[1].color == "white") {
 		score.innerHTML = "Black wins";
 		isWhiteWin = false;
@@ -585,13 +589,24 @@ function declareWinner() {
 		}),
 		contentType: 'application/json',
 		
-
-		/*error: function (xhr, status, error) {
+		success: function(data) {
+			console.log(data);
+		},
+		error: function (xhr, status, error) {
 			alert('Request failed with status: ' + status);
-		}*/
+		}
 	});
 
 	$("#exitButton").removeClass("hidden");
+}
+
+function declareWinnerOnLeave(isWhiteLeave) {
+	if (isWhiteLeave == true) {
+		score.innerHTML = "Black wins";
+	}
+	else {
+		score.innerHTML = "Red wins";
+	}
 }
 
 function playSound(sound) {
@@ -629,12 +644,13 @@ function decipherHistory(history) {
 		const [lastX, lastY] = [last[0], last[1]];
 
 
-		/*alert(`Player: ${id}, BeginX: ${beginX}, BeginY: ${beginY}, LastX: ${lastX}, LastY: ${lastY}`);*/
+		console.log(`Player: ${id}, BeginX: ${beginX}, BeginY: ${beginY}, LastX: ${lastX}, LastY: ${lastY}`);
 		let nSquare = ((lastY - 1) * 8) + parseInt(lastX);
 
 		let checker = document.getElementsByClassName(history_checker)[id];
 		showMoves(checker);
 		makeMove(nSquare);
+		checkWinAfterMove();
 		isHistory = false;
 
 	}
@@ -691,8 +707,8 @@ function setUpConnection(sessionId) {
 }
 
 
-function getIdFromUrl(url) {
-	const nUrl = new URL(url);
+function getIdFromUrl() {
+	const nUrl = new URL(window.location.href);
 	const path = nUrl.pathname; // Get the pathname component of the URL
 	const parts = path.split('/'); // Split the pathname by '/'
 	const value = parts.pop();
@@ -748,6 +764,24 @@ $(document).ready(function () {
 	setMoveIndicatorText();
 });
 
+window.addEventListener("beforeunload", function (e) {
+	connection.invoke("LeaveGameGroup", getIdFromUrl());	
+
+	/*$.ajax({
+		url: `/api/setWinner`,
+		method: 'POST',
+		dataType: 'json',
+		data: JSON.stringify({
+			sessionId: sessionId,
+			isWhiteWin: !isWhitePlayer
+		}),
+		contentType: 'application/json',
+	});*/
+
+
+	declareWinnerOnLeave(isWhitePlayer);
+});
+
 
 connection.start().then(() => {
 
@@ -760,33 +794,6 @@ connection.start().then(() => {
 
 	setUpConnection(sessionId)
 });
-/*
-connection.start()
-	.then(() => {
-
-		
-
-
-		document.getElementById("joinGameButton2").addEventListener("click", () => {
-			userId = "2";
-
-			sessionId = "1"; // Встановіть свій ID сесії
-			connectionId = userId; // Встановіть свій ID підключення (userId)
-
-			connection.invoke("JoinGameGroup", sessionId, connectionId)
-				.then(() => {
-					
-					console.log("Joined the game group");
-				})
-				.catch((error) => {
-					console.error("Error joining the game group:", error);
-				});
-		});
-	});*/
-
-// const history = "9:13-24 9:26-15 10:33-44 11:66-75 12:73-84";
-// const history = "11:53-64 12:86-75";
-// decipherHistory(history);
 
 
 

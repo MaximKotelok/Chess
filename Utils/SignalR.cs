@@ -68,14 +68,13 @@ namespace Utils
                 lobby.TryUpdate(sessionId, groupsCopy, groupsCopy);
 
 
-               
-
-                if (groupsCopy.Count == 2)
-                {
-                    var item = _unitOfWork.Session.Get(a => a.Id == sessionId);
-
-                    item.IsWaiting = false;
-                    _unitOfWork.Save();
+					if (groupsCopy.Count == 2)
+					{
+						var item = _unitOfWork.Session.Get(a => a.Id == sessionId);
+						
+						item.BeginOfGame = DateTime.Now;
+						item.IsWaiting = false;
+						_unitOfWork.Save();
 
                     foreach (var entity in groupsCopy)
                     {
@@ -149,7 +148,8 @@ namespace Utils
             await Groups.AddToGroupAsync(this.Context.ConnectionId, sessionId);
         }
 
-        public async Task LeaveGameGroup(string sessionId)
+
+        public async Task LeaveGameGroup(string sessionId, string connectionId)
         {
 
             await Groups.RemoveFromGroupAsync(this.Context.ConnectionId, sessionId);
