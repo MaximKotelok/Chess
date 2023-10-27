@@ -1,5 +1,141 @@
-﻿$(document).ready(function () {
-    getFriends();
+﻿
+//#region Received
+function RejectAjax(id) {
+    $.ajax({
+        type: "POST",
+        url: "/Game/Friends/Reject",
+        dataType: "json",
+        data: { id: id },
+        success: function () {
+            getReceived();
+        },
+        error: function () {
+        }
+    });
+}
+function AcceptAjax(id) {
+    $.ajax({
+        type: "POST",
+        url: "/Game/Friends/Accept",
+        dataType: "json",
+        data: { id: id },
+        success: function () {
+
+            getReceived();
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+} 
+
+function getReceived() {
+
+    $.ajax({
+        type: "POST",
+        url: "/Partial/Friends/GetReceived",
+        dataType: "text",
+        success: function (data) {
+            displayReceived(data);
+        },
+        error: function () {
+
+        }
+    });
+}
+function displayReceived(data) {
+    var resultContainer = $("#received-tab");
+    resultContainer.empty();
+
+    resultContainer.append(data);
+}
+
+//#endregion
+
+//#region Friends
+function RemoveFriendAjax(id) {
+    $.ajax({
+        type: "POST",
+        url: "/Game/Friends/RemoveFriend",
+        dataType: "json",
+        data: { id: id },
+        success: function () {
+            getFriends();
+        },
+        error: function () {
+        }
+    });
+}
+
+function getFriends() {
+    $.ajax({
+        type: "POST",
+        url: "/Partial/Friends/GetFriends",
+        dataType: "text",
+        success: function (data) {
+            displayFriends(data);
+        },
+        error: function () {
+
+        }
+    });
+}
+function displayFriends(data) {
+    var resultContainer = $("#friends-tab");
+    resultContainer.empty();
+
+
+    resultContainer.append(data);
+    }
+//#endregion
+
+//#region Sended
+function RecallAjax(id) {
+    $.ajax({
+        type: "POST",
+        url: "/Game/Friends/Recall",
+        dataType: "json",
+        data: { id: id },
+        success: function () {
+
+            getSended();
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+
+function getSended() {
+
+    $.ajax({
+        type: "POST",
+        url: "/Partial/Friends/GetSended",
+        dataType: "text",
+        success: function (data) {
+
+            displaySended(data);
+        },
+        error: function () {
+        }
+    });
+
+}
+
+function displaySended(data) {
+    var resultContainer = $("#sended-tab");
+    resultContainer.empty();
+
+    resultContainer.append(data);
+}
+
+//#endregion
+
+
+
+$(document).ready(function () {
+    
     $('.nav-tabs a').click(function (e) {
         e.preventDefault();
         $(this).tab('show');
@@ -8,56 +144,25 @@
     $('#received-head').click(function (e) {
         e.preventDefault();
 
-        $.ajax({
-            type: "GET",
-            url: "/api/GetReceived",
-            dataType: "json",
-            success: function (data) {
-                var parsedData = JSON.parse(data);
-                displayReceived(parsedData);
-            },
-            error: function () {
-            }
-        });
+        getReceived();
     })
     $('#sended-head').click(function (e) {
         e.preventDefault();
-
-        $.ajax({
-            type: "GET",
-            url: "/api/GetSended",
-            dataType: "json",
-            success: function (data) {
-                var parsedData = JSON.parse(data);
-                displaySended(parsedData);
-            },
-            error: function () {
-            }
-        });
+        getSended();
+        
     })
-
-
-
     $('#friends-head').click(function (e) {
         e.preventDefault();
         getFriends();
     })
 
-    function getFriends() {
+    getFriends();
 
 
-        $.ajax({
-            type: "GET",
-            url: "/api/GetFriends",
-            dataType: "json",
-            success: function (data) {
-                var parsedData = JSON.parse(data);
-                displayFriends(parsedData);
-            },
-            error: function () {
-            }
-        });
-    }
+
+
+
+    
 
 
 
@@ -85,80 +190,10 @@
             resultContainer.empty();
         }
     });
-
-    function displayFriends(data) {
-        var resultContainer = $("#friends-tab");
-        resultContainer.empty();
-
-        if (data.length > 0) {
-            var userList = "<div>";
-            $.each(data, function (index, user) {
-                userList += `
-        <form action="/Game/Friends/RemoveFriend/${user.Id}" method="POST">
-            <div>${user.UserName}</div>
-            <a class="btn btn-primary" href="/Game/Friends/Profile/${user.Id}">Open Profile</a>
-            <button class="btn btn-danger" type="submit">Remove</button>
-        </form>
-        <br>
-        `;
-            });
-            userList += "</div>";
-            resultContainer.append(userList);
-        } else {
-            resultContainer.text("There are no sended requests");
-        }
-    }
+    
 
 
-        function displaySended(data) {
-            var resultContainer = $("#sended-tab");
-            resultContainer.empty();
 
-            if (data.length > 0) {
-                var userList = "<div>";
-                $.each(data, function (index, user) {
-                    userList += `
-                <form action="/Game/Friends/Recall/${user.Id}" method="POST">
-                <img src="${user.AvatarPath}" alt="Avatar" class="profile-photo rounded-circle" height="30" /><a href="/Game/Friends/Profile/${user.Id}">
-                ${user.UserName}                                
-                
-					<button class="btn btn-danger" type="submit">Recall</button>
-				</form>
-                <br>
-                `;
-                });
-                userList += "</div>";
-                resultContainer.append(userList);
-            } else {
-                resultContainer.text("There are no sended requests");
-            }
-        }
-
-        function displayReceived(data) {
-            var resultContainer = $("#received-tab");
-            resultContainer.empty();
-
-            if (data.length > 0) {
-                var userList = "<div>";
-                $.each(data, function (index, user) {
-                    userList += `
-                <img src="${user.AvatarPath}" alt="Avatar" class="profile-photo rounded-circle" height="30" /><a href="/Game/Friends/Profile/${user.Id}">
-                ${user.UserName}                
-                <form action="/Game/Friends/Accept/${user.Id}" method="POST">
-					<button class="btn btn-success" type="submit">Accept</button>
-				</form>
-                <form action="/Game/Friends/Reject/${user.Id}" method="POST">
-					<button class="btn btn-danger" type="submit">Cancel</button>
-				</form>
-                <br>
-                `;
-                });
-                userList += "</div>";
-                resultContainer.append(userList);
-            } else {
-                resultContainer.text("There are no received requests");
-            }
-        }
 
 
         function displayResults(data) {

@@ -81,19 +81,49 @@ namespace Chess.Areas.Game.Controllers
             string matchId = StaticFunctions.CreateUniqueId();
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            _unitOfWork.Session.Add(
-                new Session { Id = matchId, BlackId = oponentId, WhiteId = userId, Steps = "", IsWaiting = true }
-                );
-            _unitOfWork.Save();
+            Session session = _unitOfWork.Session
+                .Get(a => a.IsWhiteWin == null && (
+                    (a.WhiteId == oponentId && a.BlackId == userId) ||
+                    (a.WhiteId == userId && a.BlackId == oponentId)
+                ));
+            if(session == null)
+            {            
+                _unitOfWork.Session.Add(
+                    new Session { Id = matchId, BlackId = oponentId, WhiteId = userId, Steps = "", IsWaiting = true }
+                    );
+                _unitOfWork.Save();
+            }
+            else
+            {
+                matchId = session.Id;
+                if (!session.IsWaiting)
+                {
+                    return RedirectToAction(nameof(Play), new { id = matchId });
+                }
 
+            }
             return RedirectToAction(nameof(GameLobby), new { id= matchId });
         }
 
         public IActionResult GameLobby(string id)
         {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-			Response.Cookies.Append("matchId", id);
-			return View(nameof(GameLobby),id);
+            Session session = _unitOfWork.Session
+                .Get(a => a.Id == id);
+
+            Response.Cookies.Append("userId", userId);
+            if (session.BlackId == userId || session.WhiteId == userId)
+            {
+                if(session.IsWaiting)
+                    return View(nameof(GameLobby), id);
+                else
+                    return RedirectToAction(nameof(Play), new { id = id });
+            }
+
+            return Problem("Access denied");
+
         }
 
 		public IActionResult Play(string id)

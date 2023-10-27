@@ -39,17 +39,13 @@ namespace Chess.Areas.Game.Controllers
                 userFriend.IsReceived = true;
                 _unitOfWork.UserFriend.Update(userFriend);
                 _unitOfWork.Save();
-                TempData["Succcess"] = "New Friend Added";
-            }
-            else
-            {
-                TempData["Succcess"] = "Something wrong";
+                return Json("{status: 'ok'}");
             }
 
-            return RedirectToAction(nameof(Index));
+            return Json("{status: 'problem'}");
 
 
-        }  
+        }
         [HttpPost]
         public IActionResult RemoveFriend(string id)
         {
@@ -65,14 +61,11 @@ namespace Chess.Areas.Game.Controllers
 
                 _unitOfWork.UserFriend.Remove(userFriend);
                 _unitOfWork.Save();
-                TempData["Warning"] = "Friend removed";
-            }
-            else
-            {
-                TempData["Warning"] = "Something wrong";
+                return Json("{status: 'ok'}");
             }
 
-            return RedirectToAction(nameof(Index));
+            return Json("{status: 'problem'}");
+
 
         }
 
@@ -88,25 +81,16 @@ namespace Chess.Areas.Game.Controllers
                 ));
             if (userFriend != null)
             {
-                if(userFriend.IsReceived == null || userFriend.IsReceived != true)
-                {                
+                if (userFriend.IsReceived == null || userFriend.IsReceived != true)
+                {
                     _unitOfWork.UserFriend.Remove(userFriend);
                     _unitOfWork.Save();
-                    TempData["Succcess"] = "Friend request rejected";
-                }
-                else
-                {
-                    TempData["Warning"] = "This user is already your friend";
+                    return Json("{status: 'ok'}");
                 }
 
-
-            }
-            else
-            {
-                TempData["Warning"] = "Something wrong";
             }
 
-            return RedirectToAction(nameof(Index));
+            return Json("{status: 'problem'}");
 
         }
 
@@ -126,21 +110,13 @@ namespace Chess.Areas.Game.Controllers
                 {
                     _unitOfWork.UserFriend.Remove(userFriend);
                     _unitOfWork.Save();
-                    TempData["Succcess"] = "Friend request recalled";
-                }
-                else
-                {
-                    TempData["Warning"] = "Something wrong";
+                    return Json("{status: 'ok'}");
                 }
 
 
             }
-            else
-            {
-                TempData["Warning"] = "Something wrong";
-            }
 
-            return RedirectToAction(nameof(Index));
+            return Json("{status: 'problem'}");
 
         }
 
@@ -162,16 +138,25 @@ namespace Chess.Areas.Game.Controllers
 
 
                 if (userFriend == null)
+                {
                     state = RequestState.NOTHING;
+                }
                 else if (userFriend.IsReceived == null || userFriend.IsReceived == false)
-                    state = RequestState.SENDED;
+                {
+                    if (userFriend.SenderUserId == userId)
+                        state = RequestState.SENDED_FROM_YOU;
+                    else
+                        state = RequestState.SENDED_FROM_THEM;
+                }
                 else
+                {
                     state = RequestState.FRIENDS;
+                }
             }
             else
             {
                 profileUser = _unitOfWork.User.Get(a => a.Id == userId);
-                state = RequestState.DENIED;
+                state = RequestState.ITS_YOU;
 
             }
             ProfileViewModel model = new ProfileViewModel
@@ -185,7 +170,7 @@ namespace Chess.Areas.Game.Controllers
         }
         public IActionResult Index()
         {
-			return View();
+            return View();
         }
 
         [HttpPost]
@@ -193,33 +178,35 @@ namespace Chess.Areas.Game.Controllers
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var friend = _unitOfWork.UserFriend.Get(
-                a => (
-                    (a.SenderUserId == userId && a.ReceiverUserId == id) ||
-                    (a.SenderUserId == id && a.ReceiverUserId == userId)
-                ));
-
-            if (friend == null)
+            if (userId != id)
             {
-                friend = new UserFriend { SenderUserId = userId, ReceiverUserId = id };
-                _unitOfWork.UserFriend.Add(friend);
-                _unitOfWork.Save();
-                TempData["Success"] = "Request sended";
-            }
-            else if (friend.IsReceived == null || friend.IsReceived == false)
-            {
-                TempData["Warning"] = "You have already sent a request";
-            }
-            else if (friend.IsReceived == true)
-            {
-                TempData["Warning"] = "You are already friends";
-            }
+                var friend = _unitOfWork.UserFriend.Get(
+                    a => (
+                        (a.SenderUserId == userId && a.ReceiverUserId == id) ||
+                        (a.SenderUserId == id && a.ReceiverUserId == userId)
+                    ));
 
+                if (friend == null)
+                {
+                    friend = new UserFriend { SenderUserId = userId, ReceiverUserId = id };
+                    _unitOfWork.UserFriend.Add(friend);
+                    _unitOfWork.Save();
+                    TempData["Success"] = "Request sended";
+                }
+                else if (friend.IsReceived == null || friend.IsReceived == false)
+                {
+                    TempData["Warning"] = "You have already sent a request";
+                }
+                else if (friend.IsReceived == true)
+                {
+                    TempData["Warning"] = "You are already friends";
+                }
 
+            }
             return RedirectToAction(nameof(Profile), new { id = id });
         }
 
 
-        
-	}
+
+    }
 }
