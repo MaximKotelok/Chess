@@ -74,6 +74,8 @@ namespace Utils
 						
 						item.BeginOfGame = DateTime.Now;
 						item.IsWaiting = false;
+
+                    _unitOfWork.Session.Update(item);
 						_unitOfWork.Save();
 
                     foreach (var entity in groupsCopy)
@@ -149,10 +151,12 @@ namespace Utils
         }
 
 
-        public async Task LeaveGameGroup(string sessionId, string connectionId)
+        public async Task LeaveGameGroup(string sessionId)
         {
 
-            await Groups.RemoveFromGroupAsync(this.Context.ConnectionId, sessionId);
+			await Clients.Group(sessionId).SendAsync("Win");
+			await Groups.RemoveFromGroupAsync(this.Context.ConnectionId, sessionId);
+
         }
         #endregion
     }

@@ -484,7 +484,6 @@ function attackMoves(ckc) {
 	}
 	return false;
 }
-
 function changeTurns(ckc) {
 	if (ckc.color == "white") {
 		history_checker = "black_checker"
@@ -601,12 +600,14 @@ function declareWinner() {
 }
 
 function declareWinnerOnLeave(isWhiteLeave) {
+	score.style.display = "block";
 	if (isWhiteLeave == true) {
 		score.innerHTML = "Black wins";
 	}
 	else {
 		score.innerHTML = "Red wins";
 	}
+	$("#exitButton").removeClass("hidden");
 }
 
 function playSound(sound) {
@@ -767,7 +768,7 @@ $(document).ready(function () {
 window.addEventListener("beforeunload", function (e) {
 	connection.invoke("LeaveGameGroup", getIdFromUrl());	
 
-	/*$.ajax({
+	$.ajax({
 		url: `/api/setWinner`,
 		method: 'POST',
 		dataType: 'json',
@@ -776,7 +777,7 @@ window.addEventListener("beforeunload", function (e) {
 			isWhiteWin: !isWhitePlayer
 		}),
 		contentType: 'application/json',
-	});*/
+	});
 
 
 	declareWinnerOnLeave(isWhitePlayer);
@@ -784,6 +785,11 @@ window.addEventListener("beforeunload", function (e) {
 
 
 connection.start().then(() => {
+
+	connection.on("Win", () => {
+		declareWinnerOnLeave(!isWhitePlayer);
+	});
+
 
 	connection.on("ReceiveMessage", (user, move) => {
 		console.log(`${user} made the move: ${move}`);
