@@ -59,7 +59,8 @@ namespace Utils
 					if (groupsCopy.Count == 2)
 					{
 						var item = _unitOfWork.Session.Get(a => a.Id == sessionId);
-
+						
+						item.BeginOfGame = DateTime.Now;
 						item.IsWaiting = false;
 						_unitOfWork.Save();
 
@@ -122,7 +123,7 @@ namespace Utils
         }
 
 
-        public async Task LeaveGameGroup(string sessionId, string connectionId)
+        public async Task LeaveGameGroup(string sessionId)
         {
 
             await Groups.RemoveFromGroupAsync(this.Context.ConnectionId, sessionId);

@@ -9,10 +9,13 @@
                     @if(item.WhiteId == Model.userId && item.IsWhiteWin == true){
                         <h5 class="card-title">Win</h5>
                     }
+                    else if(item.WhiteId != Model.userId && item.IsWhiteWin != true){
+                        <h5 class="card-title">Win</h5>
+                    }
                     else{
                         <h5 class="card-title">Lose</h5>
                     }
-                <p class="card-text">Date</p>
+                <p class="card-text">@item.BeginOfGame</p>
             </div>
             <div class="card-body">
                 <a class="btn btn-primary" asp-area="Game" asp-controller="History" asp-action="Replay" asp-route-id="@item.Id">Watch Replay</a>
