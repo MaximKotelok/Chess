@@ -24,98 +24,21 @@ namespace Chess.Areas.Game.Controllers
             }
 
 
-        [HttpGet("GetUsersByUsername")]
-        public IActionResult GetUsersByUsername(string username)
-        {
+		[HttpGet("GetUsersByUsername")]
+		public IActionResult GetUsersByUsername(string username)
+		{
 
-            List<UserFriendViewModel> data = new List<UserFriendViewModel>();
-            if (!System.String.IsNullOrEmpty(username))
-                data = _unitOfWork.User.GetAll(a => a.UserName.StartsWith(username)).Select(a => new UserFriendViewModel { AvatarPath = a.AvatarPath, Id = a.Id, UserName = a.UserName })
-                    .ToList();
+			List<UserFriendViewModel> data = new List<UserFriendViewModel>();
+			if (!System.String.IsNullOrEmpty(username))
+				data = _unitOfWork.User.GetAll(a => a.UserName.StartsWith(username)).Select(a => new UserFriendViewModel { AvatarPath = a.AvatarPath, Id = a.Id, UserName = a.UserName })
+					.ToList();
 
-            var result = JsonConvert.SerializeObject(data);
-
-            return Json(result);
-
-
-        }
-        
-        [HttpGet("GetFriends")]
-        public IActionResult GetFriends()
-        {
-				var claimsIdentity = (ClaimsIdentity)User.Identity;
-				var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-				var user = _unitOfWork.User.Get(a => a.Id == userId, includeProperties: "SendedUserFriends,ReceivedUserFriends");
-
-
-
-				var data = user.SendedUserFriends.Concat(user.ReceivedUserFriends)
-					.Where(a => a.IsReceived == true)
-					 .Select(a =>
-					 {
-						 if (a.SenderUserId == userId)
-							 return a.ReceiverUserId;
-						 else
-							 return a.SenderUserId;
-					 })
-					 .Select(a => _unitOfWork.User.Get(b => b.Id == a))
-                     .Select(a => new UserFriendViewModel { AvatarPath = a.AvatarPath, Id = a.Id, UserName = a.UserName })
-                     .ToList();
-
-
-
-
-			
-
-            var result = JsonConvert.SerializeObject(data);
-
-            return Json(result);
-
-
-        }
-            [HttpGet("GetSended")]
-            public IActionResult GetSended()
-            {
-                var claimsIdentity = (ClaimsIdentity)User.Identity;
-			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-			var user = _unitOfWork.User.Get(a => a.Id == userId, includeProperties: "SendedUserFriends,ReceivedUserFriends");
-
-
-			var received = user.SendedUserFriends.Where(a => a.IsReceived == null || a.IsReceived == false)
-						.Select(a => _unitOfWork.User.Get(b => a.ReceiverUserId == b.Id))
-                        .Select(a => new UserFriendViewModel { AvatarPath = a.AvatarPath, Id = a.Id, UserName = a.UserName })
-                        .ToList();
-
-
-			var result = JsonConvert.SerializeObject(received);
+			var result = JsonConvert.SerializeObject(data);
 
 			return Json(result);
 
-		}
-
-
-        [HttpGet("GetReceived")]
-        public IActionResult GetReceived()
-        {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-			var user = _unitOfWork.User.Get(a => a.Id == userId, includeProperties: "SendedUserFriends,ReceivedUserFriends");
-
-
-
-			var requests = user.ReceivedUserFriends.Where(a => a.IsReceived == null || a.IsReceived == false)
-						.Select(a => _unitOfWork.User.Get(b => a.SenderUserId == b.Id))
-                        .Select(a => new UserFriendViewModel { AvatarPath = a.AvatarPath, Id = a.Id, UserName = a.UserName })
-                        .ToList();
-
-			var result = JsonConvert.SerializeObject(requests);
-
-			return Json(result);
 
 		}
-
-
-
 
 		[HttpGet("sessions")]
         public async Task<IActionResult> GetSessionData(string sessionId)

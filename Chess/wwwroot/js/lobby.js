@@ -1,4 +1,14 @@
-﻿function getCookie(cname) {
+﻿var connectionId = getCookie("userId");
+function getIdFromUrl() {
+	const nUrl = new URL(window.location.href);
+	const path = nUrl.pathname; 
+	const parts = path.split('/'); 
+	const value = parts.pop();
+
+	return value;
+}
+
+function getCookie(cname) {
 	let name = cname + "=";
 	let decodedCookie = decodeURIComponent(document.cookie);
 	let ca = decodedCookie.split(';');
@@ -14,26 +24,31 @@
 	return "";
 }
 
-
 const connection = new signalR.HubConnectionBuilder().withUrl("/signalr").build();
 
 
 connection.start().then(() => {
-	console.log(getCookie("matchId"));
+	
 	connection.on("Started", () => {
-		window.location.href = `/Game/Match/Play/${getCookie("matchId")}`;
+		window.location.href = `/Game/Match/Play/${getIdFromUrl()}`;
 	});
 
-	connection.on("Count", (a) => {
-		console.log(a);
+	connection.on("ReceiveMessage", (a,b) => {
+		console.log(a + " " + b);
 	});
 
-	connection.invoke("JoinLobby", getCookie("matchId"))
+	
+	connection.invoke("JoinLobby", getIdFromUrl(), connectionId)
 		.then(() => {
 			console.log("Joined to lobby");
 		})
 		.catch((error) => {
 			console.error("Error joining the lobby:", error);
 		});
+
+});
+
+window.addEventListener("beforeunload", function (e) {
+	connection.invoke("LeaveLobby", getIdFromUrl(), connectionId);
 
 });
