@@ -10,11 +10,11 @@
 			<button class="btn btn-success" type="submit">Add to friends</button>
 		</form>
 	}
-	@if (Model.State == RequestState.FRIENDS)
+	else if (Model.State == RequestState.FRIENDS)
 	{
 		<button class="btn btn-danger" onclick="RemoveFriendAjax('@Model.User.Id')">Remove from friends</button>
 	}
-	@if (Model.State == RequestState.SENDED_FROM_THEM)
+	else if (Model.State == RequestState.SENDED_FROM_THEM)
 	{
 		<p>@Model.User.UserName is sending you a friend request!</p>
 		<div class="d-flex justify-content-center">
@@ -22,12 +22,13 @@
 			<button class="btn btn-danger" onclick="RejectAjax('@Model.User.Id')">Reject</button>
 		</div>
 	}
-	@if (Model.State == RequestState.SENDED_FROM_YOU)
+	else if (Model.State == RequestState.SENDED_FROM_YOU)
 	{
 		<p>You are sending a friend request to @Model.User.UserName!</p>
 		<div class="d-flex justify-content-center">
 			<button class="btn btn-danger" onclick="RecallAjax('@Model.User.Id')">Recall</button>
 		</div>
+		<p>Reputation: @Model.User.Reputation</p>
 	}
 </div>
 

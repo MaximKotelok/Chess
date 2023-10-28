@@ -8,7 +8,7 @@ namespace Models.ViewModels
 {
     public class ReplayViewModel
     {
-        public List<String> WhiteMoves { get; set; }
-        public List<String> BlackMoves { get; set; }
+        public Dictionary<int, string> WhiteMoves { get; set; }
+        public Dictionary<int, string> BlackMoves { get; set; }
     }
 }

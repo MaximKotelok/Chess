@@ -27,7 +27,7 @@ namespace Chess.Areas.Game.Controllers
 
             HistoryViewModel viewModel = new HistoryViewModel();
             viewModel.history = _unitOfWork.Session.GetAll(x => (x.BlackId == userId || x.WhiteId == userId) && x.IsWhiteWin != null)
-                .OrderBy(x => x.BeginOfGame)
+                .OrderByDescending(x => x.BeginOfGame)
                 .ToList();
             viewModel.userId = userId;
 
@@ -41,7 +41,7 @@ namespace Chess.Areas.Game.Controllers
 
 
             Session session = _unitOfWork.Session.Get(x => x.Id == id);
-            parseSessionHistory(session.Steps, out List<string> white, out List<string> black);
+            parseSessionHistory(session.Steps, out Dictionary<int, string> white, out Dictionary<int, string> black);
 
             ReplayViewModel viewModel = new ReplayViewModel();
             viewModel.WhiteMoves = white;
@@ -50,10 +50,10 @@ namespace Chess.Areas.Game.Controllers
             return View(viewModel);
         }
 
-        private static void parseSessionHistory(string history, out List<string> white, out List<string> black)
+        private static void parseSessionHistory(string history, out Dictionary<int, string> white, out Dictionary<int, string> black)
         {
-            white = new List<string>();
-            black = new List<string>();
+            white = new Dictionary<int, string>();
+            black = new Dictionary<int, string>();
 
             string[] moves = history.Split(' ');
 
@@ -65,11 +65,11 @@ namespace Chess.Areas.Game.Controllers
                     string[] details = moveParts[1].Split('-');
                     if (i % 2 == 0)
                     {
-                        white.Add(details[0] + "-" + details[1]);
+                        white.Add(i, details[0] + "-" + details[1]);
                     }
                     else
                     {
-                        black.Add(details[0] + "-" + details[1]);
+                        black.Add(i, details[0] + "-" + details[1]);
                     }
                 }
             }

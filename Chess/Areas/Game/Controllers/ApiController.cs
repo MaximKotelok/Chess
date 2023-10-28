@@ -17,11 +17,11 @@ namespace Chess.Areas.Game.Controllers
     public class ApiController : Controller
     {
             
-            private readonly IUnitOfWork _unitOfWork;
-            public ApiController(IUnitOfWork unitOfWork)
-            {
-                _unitOfWork = unitOfWork;
-            }
+        private readonly IUnitOfWork _unitOfWork;
+        public ApiController(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
 
 
 		[HttpGet("GetUsersByUsername")]
@@ -59,13 +59,32 @@ namespace Chess.Areas.Game.Controllers
         public async Task<IActionResult> SetWinner([FromBody] WinnerData data)
         {
 			var session = _unitOfWork.Session.Get(a => a.Id == data.SessionId);
+			if(session.IsWhiteWin != null)
+                return Json("{status: 'ok'}");
+
             session.IsWhiteWin = data.IsWhiteWin;
-            _unitOfWork.Session.Update(session);
+
+			var white = _unitOfWork.User.Get(x => x.Id == session.WhiteId);
+			var black = _unitOfWork.User.Get(x => x.Id == session.BlackId);
+
+			if (data.IsWhiteWin == true)
+			{
+				white.Reputation += 1;
+				black.Reputation -= 1;
+			}
+			else
+			{
+				white.Reputation -= 1;
+				black.Reputation += 1;
+			}
+
+			_unitOfWork.Session.Update(session);
+			_unitOfWork.User.Update(white);
+			_unitOfWork.User.Update(black);
+
 			_unitOfWork.Save();
 
-            return Json("{status: 'ok'}"); ;
+			return Json("{status: 'ok'}"); 
         }
-
-
 	}
 }
