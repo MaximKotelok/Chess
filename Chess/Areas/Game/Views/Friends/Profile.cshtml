@@ -3,6 +3,8 @@
 <div class="text-center">
 	<img src="@Model.User.AvatarPath" alt="Avatar" class="profile-photo rounded-circle" height="150" />
 	<h1>@Model.User.UserName</h1>
+	<p>Reputation: @Model.User.Reputation</p>
+
 
 	@if (Model.State == RequestState.NOTHING)
 	{
@@ -28,7 +30,6 @@
 		<div class="d-flex justify-content-center">
 			<button class="btn btn-danger" onclick="RecallAjax('@Model.User.Id')">Recall</button>
 		</div>
-		<p>Reputation: @Model.User.Reputation</p>
 	}
 </div>
 
