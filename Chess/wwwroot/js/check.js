@@ -567,14 +567,16 @@ function declareWinner() {
 	/*black_background.style.display = "inline";*/
 	let isWhiteWin = false;
 
-	score.style.display = "block";
+
+	let text = "";
+	
 	
 	if (the_checker[1].color == "white") {
-		score.innerHTML = "Black wins";
+		text = "Black wins";
 		isWhiteWin = false;
 	}
 	else {
-		score.innerHTML = "Red wins";
+		text = "Red wins";
 		isWhiteWin = true;
 	}
 
@@ -596,20 +598,52 @@ function declareWinner() {
 		}
 	});
 
+	swal({
+
+		title: 'Game Over!',
+		text: text,
+		showConfirmButton: true,
+		confirmButtonText: 'Exit',
+		type: 'info'
+	}
+		, function (res) {
+
+			window.location = "/Game/Match/Index";
+		});
+
 	$("#exitButton").removeClass("hidden");
 }
 
-function declareWinnerOnLeave(isWhiteLeave) {
-	score.style.display = "block";
+
+
+function declareWinnerOnGiveUp(isWhiteLeave) {
+	let head = "";
+	let text = "";
 	if (isWhiteLeave == true) {
-		score.innerHTML = "Black wins";
+		head = "Red gives up";
+		text = "Black wins";
 	}
 	else {
-		score.innerHTML = "Red wins";
+		head = "Black gives up";
+		text = "Red wins";
 	}
+
+	
+	swal({
+	
+		title: head,
+		text: text,
+		showConfirmButton: true,
+		confirmButtonText: 'Exit',
+		type: 'info'	
+		}
+	,function (res) {
+	
+		window.location = "/Game/Match/Index";
+	});
+
 	$("#exitButton").removeClass("hidden");
 }
-
 function playSound(sound) {
 	if (sound) sound.play();
 }
@@ -768,6 +802,23 @@ $(document).ready(function () {
 window.addEventListener("beforeunload", function (e) {
 	connection.invoke("LeaveGameGroup", getIdFromUrl());	
 
+	/*$.ajax({
+		url: `/api/setWinner`,
+		method: 'POST',
+		dataType: 'json',
+		data: JSON.stringify({
+			sessionId: sessionId,
+			isWhiteWin: !isWhitePlayer
+		}),
+		contentType: 'application/json',
+	});
+*/
+
+	//declareWinnerOnLeave(isWhitePlayer);
+});
+
+function giveUp() {
+	connection.invoke("GiveUp", getIdFromUrl(), isWhitePlayer);
 	$.ajax({
 		url: `/api/setWinner`,
 		method: 'POST',
@@ -778,16 +829,12 @@ window.addEventListener("beforeunload", function (e) {
 		}),
 		contentType: 'application/json',
 	});
-
-
-	declareWinnerOnLeave(isWhitePlayer);
-});
-
+}
 
 connection.start().then(() => {
 
-	connection.on("Win", () => {
-		declareWinnerOnLeave(!isWhitePlayer);
+	connection.on("Win", (isWhitePlayer) => {
+		declareWinnerOnGiveUp(isWhitePlayer);
 	});
 
 

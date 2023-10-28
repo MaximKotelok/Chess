@@ -3,7 +3,8 @@
 }
 
 
-<body id="ht">
+<div id="ht">
+
 	<!-- astea 2 sunt puse ca indexarea claselor sa inceapa de la 1 -->
 	<div class="checker white_checker" style="display:none"> </div>
 	<div class="checker black_checker" style="display:none"> </div>
@@ -15,6 +16,11 @@
 	<div class="score" id="score">
 		
 	</div>
+	<div class="container mb-4 w-100 d-flex flex-column align-items-center text-center" style="position:relative; height:100px">
+		<p id="playerMoveText"></p>
+		<div class="move_checker move_white_checker" id="moveDisplay"> </div>
+	</div>
+
 	<div class="table" id="table">
 
 		<div class="checker white_checker"> </div>
@@ -125,20 +131,17 @@
 		<div class="clear_float"> </div>
 
 	</div>
-	<div class="container mb-4" style="position:relative; height:100px">
-		<p id="playerMoveText"></p>
-		<div class="move_checker move_white_checker" id="moveDisplay"> </div>
+	<div class="text-center">
+		<button class="btn btn-danger w-25 m-4" onclick="giveUp()">Give Up</button>
 	</div>
-	<div class="container hidden" id="exitButton">
-		<a class="btn btn-danger btn-lg" asp-area="Game" asp-controller="Match" asp-action="Index">Exit</a>
-	</div>
+	
 	<audio id="moveSound">
 		<source src="sounds/move.mp3">
 	</audio>
 	<audio id="winSound">
 		<source src="sounds/win.mp3">
 	</audio>
-</body>
+</div>
 
 @section Scripts {
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.7/signalr.min.js" integrity="sha512-w8K//0QrLkzgScjZIiDUHnxcDoKGGqy/OLa3X0PuRA6ZlZnwUCgaM26ro3ZFZ0AGElA+0SThNpsXNx2sCm5VuA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

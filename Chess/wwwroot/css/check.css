@@ -91,12 +91,9 @@ body, html {
     background: #00001F;
 }
 .move_checker {
-    top: 10px;
-    left: 150px;
     width: 54px;
     height: 54px;
     border-radius: 50%;
-    position: absolute;
     border: 4px solid white;
 }
     /*.black_background {

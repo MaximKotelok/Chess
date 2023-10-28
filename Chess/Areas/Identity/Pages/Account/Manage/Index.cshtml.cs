@@ -39,6 +39,7 @@ namespace Chess.Areas.Identity.Pages.Account.Manage
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         public string Email { get; set; }
+        public string Username { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -67,21 +68,18 @@ namespace Chess.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Avatar")]
             public IFormFile AvatarFile { get; set; }
             public string Avatar { get; set; }
-			[Required]
-			[MinLength(5)]
-            public string Username { get; set; }
+			
 
         }
 
         private async Task LoadAsync(User user)
         {
-            var userName = await _userManager.GetUserNameAsync(user);
-
-            Email = await _userManager.GetEmailAsync(user);
             
+            Email = await _userManager.GetEmailAsync(user);
+            Username = await _userManager.GetUserNameAsync(user);
             Input = new InputModel
             {
-                Username = userName,
+                
                 Avatar = user.AvatarPath
             };
         }
@@ -112,12 +110,7 @@ namespace Chess.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            if(Input.Username != user.UserName)
-            {
-                user.UserName = Input.Username;
-                user.NormalizedUserName = Input.Username.ToUpper();
-
-            }
+            
             
             if (Input.AvatarFile != null)
             {

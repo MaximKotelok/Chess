@@ -27,9 +27,12 @@ body {
 
 
 .h-60{
-    min-height:60%;
+    min-height:60vh!important;
 }
 
+* {
+    --bs-nav-link-hover-color: rgba(255, 255, 255, 0.7);
+}
 
 
 .layout-container {

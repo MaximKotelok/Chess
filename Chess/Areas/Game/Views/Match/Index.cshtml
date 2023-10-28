@@ -1,16 +1,31 @@
 ﻿@using Models.ViewModels
 @model GameIndexViewModel
 
-
-@foreach(var friend in Model.Friends){
-	@if(friend.MatchId == null)
+<div class="row">
+	<h3>Your friends:</h3>
+	@if(Model.Friends.Count == 0)
 	{
-		<form method="post" asp-area="Game" asp-controller="Match" asp-action="CreateMatch" asp-route-oponentId="@friend.User.Id">
-			<button type="submit">Invite @friend.User.UserName</button>
-		</form>
-	}else{
-		<a asp-area="Game" asp-controller="Match" asp-action="GameLobby" asp-route-id="@friend.MatchId">Join to @friend.User.UserName</a>
+		<p>No friends... Find them on the <a asp-area="Game" asp-controller="Friends" asp-action="Index">friend page</a>!</p>
 	}
+	<hr />
+	@foreach(var friend in Model.Friends){	
+	<div class="w-100 d-flex justify-content-">
+								
+			<p>@friend.User.UserName</p>
+		
+			@if (friend.MatchId == null)
+			{
+				<form method="post" asp-area="Game" asp-controller="Match" asp-action="CreateMatch" asp-route-oponentId="@friend.User.Id">
+					<button class="btn btn-success" type="submit">Invite</button>
+				</form>
+			}
+			else
+			{
+				<a class="btn btn-info" asp-area="Game" asp-controller="Match" asp-action="GameLobby" asp-route-id="@friend.MatchId">Join</a>
+			}
+
+		</div>
+	
 
 }
-
+</div>

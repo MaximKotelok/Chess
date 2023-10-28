@@ -154,7 +154,14 @@ namespace Utils
         public async Task LeaveGameGroup(string sessionId)
         {
 
-			await Clients.Group(sessionId).SendAsync("Win");
+			//await Clients.Group(sessionId).SendAsync("Win");
+			await Groups.RemoveFromGroupAsync(this.Context.ConnectionId, sessionId);
+
+        }
+        public async Task GiveUp(string sessionId, bool isWhite)
+        {
+
+			await Clients.Group(sessionId).SendAsync("Win", isWhite);
 			await Groups.RemoveFromGroupAsync(this.Context.ConnectionId, sessionId);
 
         }
