@@ -1,153 +1,152 @@
 ﻿@model ReplayViewModel
 
-<body id="ht">
-	<!-- astea 2 sunt puse ca indexarea claselor sa inceapa de la 1 -->
+
+	<a class="btn btn-danger" asp-area="Game" asp-controller="History" asp-action="Index">Back</a>
 	<div class="checker white_checker" style="display:none"> </div>
 	<div class="checker black_checker" style="display:none"> </div>
 
 
 	<div class="square" style="display: none" id="ht"> </div>
 	<div class="black_background" id="black_background"> </div>
+	<div class="container-fluid">
+		
+		<div class="table" id="table">
 
-	<div class="score" id="score">
-		<br>
-	</div>
-	<div class="table" id="table">
+			<div class="checker white_checker"> </div>
+			<div class="checker white_checker"> </div>
+			<div class="checker white_checker"> </div>
+			<div class="checker white_checker"> </div>
+			<div class="checker white_checker"> </div>
+			<div class="checker white_checker"> </div>
+			<div class="checker white_checker"> </div>
+			<div class="checker white_checker"> </div>
+			<div class="checker white_checker"> </div>
+			<div class="checker white_checker"> </div>
+			<div class="checker white_checker"> </div>
+			<div class="checker white_checker"> </div>
 
-		<div class="checker white_checker"> </div>
-		<div class="checker white_checker"> </div>
-		<div class="checker white_checker"> </div>
-		<div class="checker white_checker"> </div>
-		<div class="checker white_checker"> </div>
-		<div class="checker white_checker"> </div>
-		<div class="checker white_checker"> </div>
-		<div class="checker white_checker"> </div>
-		<div class="checker white_checker"> </div>
-		<div class="checker white_checker"> </div>
-		<div class="checker white_checker"> </div>
-		<div class="checker white_checker"> </div>
-
-		<div class="checker black_checker"> </div>
-		<div class="checker black_checker"> </div>
-		<div class="checker black_checker"> </div>
-		<div class="checker black_checker"> </div>
-		<div class="checker black_checker"> </div>
-		<div class="checker black_checker"> </div>
-		<div class="checker black_checker"> </div>
-		<div class="checker black_checker"> </div>
-		<div class="checker black_checker"> </div>
-		<div class="checker black_checker"> </div>
-		<div class="checker black_checker"> </div>
-		<div class="checker black_checker"> </div>
+			<div class="checker black_checker"> </div>
+			<div class="checker black_checker"> </div>
+			<div class="checker black_checker"> </div>
+			<div class="checker black_checker"> </div>
+			<div class="checker black_checker"> </div>
+			<div class="checker black_checker"> </div>
+			<div class="checker black_checker"> </div>
+			<div class="checker black_checker"> </div>
+			<div class="checker black_checker"> </div>
+			<div class="checker black_checker"> </div>
+			<div class="checker black_checker"> </div>
+			<div class="checker black_checker"> </div>
 
 
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="clear_float"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="clear_float"> </div>
 
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="clear_float"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="clear_float"> </div>
 
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="clear_float"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="clear_float"> </div>
 
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="clear_float"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="clear_float"> </div>
 
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="clear_float"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="clear_float"> </div>
 
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="clear_float"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="clear_float"> </div>
 
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="clear_float"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="clear_float"> </div>
 
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="square white_square"> </div>
-		<div class="square black_square"> </div>
-		<div class="clear_float"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="square white_square"> </div>
+			<div class="square black_square"> </div>
+			<div class="clear_float"> </div>
 
-	</div>
-	<div class="container">
-		<div class="row justify-content-center">
-			<div class="col-8">
-				<!-- Adjust the column size as needed -->
-				<div class="row">
-					<div class="col-6">
-						<h4>White Moves</h4>
-						@foreach (var move in Model.WhiteMoves)
-						{
-							<p>@move</p>
-						}
-					</div>
-
-					<div class="col-6">
-						<h4>Black Moves</h4>
-						@foreach (var move in Model.BlackMoves)
-						{
-							<p>@move</p>
-						}
+		</div>
+		<hr />
+		<div class="container text-center">
+			<div class="roww justify-content-center d-flex">
+				<div class="col-8">
+					<div class="row justify-content-center d-flex">
+						<div class="col-3">
+							<h4>White Moves</h4>
+							@foreach (var move in Model.WhiteMoves)
+							{
+								<p>@move</p>
+							}
+						</div>
+						<div class="col-3"></div>
+						<div class="col-3">
+							<h4>Black Moves</h4>
+							@foreach (var move in Model.BlackMoves)
+							{
+								<p>@move</p>
+							}
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		<hr />
 	</div>
-
-	<a class="btn btn-danger" asp-area="Game" asp-controller="History" asp-action="Index">Back</a>
+	
 
 
 	<audio id="moveSound">
@@ -156,7 +155,7 @@
 	<audio id="winSound">
 		<source src="sounds/win.mp3">
 	</audio>
-</body>
+
 
 @section Scripts {
 	<script type="text/javascript" src="~/js/replay.js"></script>

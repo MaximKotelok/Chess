@@ -245,10 +245,10 @@ function showMoves(piece) {
 
 
 function erase_roads(piece) {
-	if (downRight) block[downRight].id.style.background = "#BA7A3A";
-	if (downLeft) block[downLeft].id.style.background = "#BA7A3A";
-	if (upRight) block[upRight].id.style.background = "#BA7A3A";
-	if (upLeft) block[upLeft].id.style.background = "#BA7A3A";
+	if (downRight) block[downRight].id.style.background = "#4a3521";
+	if (downLeft) block[downLeft].id.style.background = "#4a3521";
+	if (upRight) block[upRight].id.style.background = "#4a3521";
+	if (upLeft) block[upLeft].id.style.background = "#4a3521";
 }
 
 /*=============ПЕРЕМІЩЕННЯ ЧАСТИНИ======*/

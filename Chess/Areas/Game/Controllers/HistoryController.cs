@@ -27,7 +27,7 @@ namespace Chess.Areas.Game.Controllers
 
             HistoryViewModel viewModel = new HistoryViewModel();
             viewModel.history = _unitOfWork.Session.GetAll(x => (x.BlackId == userId || x.WhiteId == userId) && x.IsWhiteWin != null)
-                .OrderBy(x => x.BeginOfGame)
+                .OrderByDescending(x => x.BeginOfGame)
                 .ToList();
             viewModel.userId = userId;
 

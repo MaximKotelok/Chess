@@ -1,25 +1,57 @@
 ﻿@model HistoryViewModel
 
+@{
+	int year = 0;
+	int month = 0;
+	int day = 0;
+
+	bool isOldDate(DateTime dateTime)
+	{
+		if (dateTime.Year != year || dateTime.Month != month || dateTime.Day != day)
+		{
+			year = dateTime.Year;
+			month = dateTime.Month;
+			day = dateTime.Day;
+			return false;
+		}
+		return true;
+	}
+}
+
 <div class="container">
- 
-    @foreach(var item in Model.history)
-    {
-        <div class="card mb-4" style="width: 18rem;">
-            <div class="card-body">
-                    @if(item.WhiteId == Model.userId && item.IsWhiteWin == true){
-                        <h5 class="card-title">Win</h5>
-                    }
-                    else if(item.WhiteId != Model.userId && item.IsWhiteWin != true){
-                        <h5 class="card-title">Win</h5>
-                    }
-                    else{
-                        <h5 class="card-title">Lose</h5>
-                    }
-                <p class="card-text">@item.BeginOfGame</p>
-            </div>
-            <div class="card-body">
-                <a class="btn btn-primary" asp-area="Game" asp-controller="History" asp-action="Replay" asp-route-id="@item.Id">Watch Replay</a>
-            </div>
-        </div>
-    }
+
+	<div class="row">
+		
+		@foreach (var item in Model.history)
+		{
+
+			@if (!isOldDate(item.BeginOfGame.Value)){
+				<hr />
+				<h2>@item.BeginOfGame.Value.ToShortDateString()</h2>				
+			}
+
+
+			<div class="col-md-3 mb-3">
+				<div class="card-body border text-center rounded p-3">
+					@if (item.WhiteId == Model.userId && item.IsWhiteWin == true)
+					{
+						<h3 class="card-title text-success">Win</h3>
+					}
+					else if (item.WhiteId != Model.userId && item.IsWhiteWin != true)
+					{
+						<h3 class="card-title text-success">Win</h3>
+					}
+					else
+					{
+						<h4 class="card-title text-danger">Lose</h4>
+					}
+					<p class="card-text">@item.BeginOfGame.Value.ToString("HH:mm")</p>				
+					<a class="btn btn-info" asp-area="Game" asp-controller="History" asp-action="Replay" asp-route-id="@item.Id">Watch Replay</a>
+				</div>
+			</div>
+
+
+		
+		}
+	</div>
 </div>
