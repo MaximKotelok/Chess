@@ -129,7 +129,7 @@
 							<h4>White Moves</h4>
 							@foreach (var move in Model.WhiteMoves)
 							{
-								<p>@move</p>
+								<p id="step-@move.Key">@move.Value</p>
 							}
 						</div>
 						<div class="col-3"></div>
@@ -137,7 +137,7 @@
 							<h4>Black Moves</h4>
 							@foreach (var move in Model.BlackMoves)
 							{
-								<p>@move</p>
+								<p id="step-@move.Key">@move.Value</p>
 							}
 						</div>
 					</div>

@@ -206,6 +206,35 @@ namespace Chess.Areas.Game.Controllers
             return RedirectToAction(nameof(Profile), new { id = id });
         }
 
+        public IActionResult Top()
+        {
+			var claimsIdentity = (ClaimsIdentity)User.Identity;
+			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			var user = _unitOfWork.User.Get(a => a.Id == userId, includeProperties: "SendedUserFriends,ReceivedUserFriends");
+
+			var top = user.SendedUserFriends.Concat(user.ReceivedUserFriends)
+				.Where(a => a.IsReceived == true)
+				 .Select(a =>
+				 {
+					 if (a.SenderUserId == userId)
+						 return a.ReceiverUserId;
+					 else
+						 return a.SenderUserId;
+				 })
+				 .Select(a => _unitOfWork.User.Get(b => b.Id == a))
+				 .ToList();
+
+            top.Add(user);
+
+			top = top.OrderByDescending(user => user.Reputation).ToList();
+
+
+            TopViewModel viewModel = new TopViewModel();
+            viewModel.CurrentPlayer = user;
+            viewModel.Top = top;
+
+			return View(viewModel);
+        }
 
 
     }

@@ -643,6 +643,7 @@ function declareWinnerOnGiveUp(isWhiteLeave) {
 	});
 
 	$("#exitButton").removeClass("hidden");
+	nullSide();
 }
 function playSound(sound) {
 	if (sound) sound.play();
@@ -707,10 +708,30 @@ function selectSide() {
 		})
 		isWhitePlayer = false;
 	} else {
+		b_checker.forEach(x => {
+			x.id.onclick = null
+		})
+
+		w_checker.forEach(x => {
+			x.id.onclick = null
+		})
 		alert("Cheater")
 		return;
 	}
 
+}
+function nullSide() {
+	let whiteId = getCookie("whiteId");
+	let blackId = getCookie("blackId");
+	let userId = getCookie("userId");
+
+	b_checker.forEach(x => {
+		x.id.onclick = null
+	})
+
+	w_checker.forEach(x => {
+		x.id.onclick = null
+	})
 }
 function getCookie(cname) {
 	let name = cname + "=";

@@ -558,7 +558,9 @@ function decipherHistory(history) {
 
 			showMoves(checker);
 			makeMove(nSquare);
+			setStepInicator(index);
 			isHistory = false;
+
 
 			index++; // Move to the next move
 			setTimeout(processNextMove, 1000); // Schedule the next move after a 1-second delay
@@ -567,6 +569,13 @@ function decipherHistory(history) {
 
 	processNextMove(); // Start processing the first move
 }
+
+function setStepInicator(index) {
+	if (index != 0)
+		$("#step-" + (Number(index) - 1)).removeClass("isMove");
+	$("#step-" + index).addClass("isMove");
+}
+
 function nullSide() {
 	let whiteId = getCookie("whiteId");
 	let blackId = getCookie("blackId");
