@@ -1,4 +1,6 @@
-﻿.ex-tab .nav-pills > li > a {
+﻿
+
+.ex-tab .nav-pills > li > a {
     border-radius: 4px 4px 0 0;
 }
 
@@ -8,4 +10,39 @@
 
 .tab-pane{
     text-align:center;
+}
+
+.nav.nav-tabs .nav-link:hover {
+    background: rgba(255, 255, 255, 0.7);
+    border:none;
+}
+
+.user-list {
+    list-style: none;
+    padding: 0;
+}
+
+.user-list-item {
+    background-color: #3d3d3d; 
+    color: white;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-link {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+    .user-link:hover {
+        text-decoration: underline;
+    }
+
+.btn-container {
+    display: flex;
 }

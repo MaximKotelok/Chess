@@ -6,6 +6,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,14 +21,17 @@ namespace Chess.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IUnitOfWork _unitOfWork;
         public IndexModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment,
+			IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _webHostEnvironment = webHostEnvironment;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -63,6 +67,8 @@ namespace Chess.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Avatar")]
             public IFormFile AvatarFile { get; set; }
             public string Avatar { get; set; }
+			[Required]
+			[MinLength(5)]
             public string Username { get; set; }
 
         }
@@ -109,6 +115,7 @@ namespace Chess.Areas.Identity.Pages.Account.Manage
             if(Input.Username != user.UserName)
             {
                 user.UserName = Input.Username;
+                user.NormalizedUserName = Input.Username.ToUpper();
 
             }
             
@@ -137,8 +144,10 @@ namespace Chess.Areas.Identity.Pages.Account.Manage
 
                 user.AvatarPath = @"\" + SD.AvatarsPath + @"\" + fileName;
             }
-
+            
             await _userManager.UpdateAsync(user);
+            _unitOfWork.User.Update(user);
+            _unitOfWork.Save();
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();

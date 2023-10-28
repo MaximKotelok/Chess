@@ -1,4 +1,29 @@
-﻿
+﻿const loading = `<div class="w-100 d-flex justify-content-center">
+                    <div class="loading">
+                        <div class="ball1"></div>
+                        <div class="ball2"></div>
+                        <div class="ball3"></div>
+                    </div>
+                </div>
+                `;
+
+const templateSearch = Handlebars.compile(`
+<ul class="user-list container">
+  {{#if UserList}}
+    {{#each UserList}}
+      <li class="user-list-item">
+        <div>
+          <img src="{{AvatarPath}}" alt="Avatar" class="profile-photo rounded-circle" height="30" />
+          <a href="/Game/Friends/profile/{{Id}}" class="user-link">{{UserName}}</a>
+        </div>
+      </li>
+    {{/each}}
+  {{else}}
+    <li>There are no users</li>
+  {{/if}}
+</ul>
+`);
+
 //#region Received
 function RejectAjax(id) {
     $.ajax({
@@ -30,7 +55,9 @@ function AcceptAjax(id) {
 } 
 
 function getReceived() {
-
+    var resultContainer = $("#received-tab");
+    resultContainer.empty();
+    resultContainer.append(loading);
     $.ajax({
         type: "POST",
         url: "/Partial/Friends/GetReceived",
@@ -68,6 +95,10 @@ function RemoveFriendAjax(id) {
 }
 
 function getFriends() {
+    var resultContainer = $("#friends-tab");
+    resultContainer.empty();
+    resultContainer.append(loading);
+
     $.ajax({
         type: "POST",
         url: "/Partial/Friends/GetFriends",
@@ -108,6 +139,9 @@ function RecallAjax(id) {
 
 
 function getSended() {
+    var resultContainer = $("#sended-tab");
+    resultContainer.empty();
+    resultContainer.append(loading);
 
     $.ajax({
         type: "POST",
@@ -196,24 +230,11 @@ $(document).ready(function () {
 
 
 
-        function displayResults(data) {
-            var resultContainer = $("#resultContainer");
-            resultContainer.empty();
-
-            if (data.length > 0) {
-                var userList = "<div>";
-                $.each(data, function (index, user) {
-                    userList += `<img src="${user.AvatarPath}" alt="Avatar" class="profile-photo rounded-circle" height="30" /><a href="/Game/Friends/Profile/${user.Id}">
-                
-                ${user.UserName}
-                </a><br>
-                `;
-                });
-                userList += "</div>";
-                resultContainer.append(userList);
-            } else {
-                resultContainer.text("Users not found");
-            }
+    function displayResults(data) {           
+        var resultContainer = $("#resultContainer");
+        resultContainer.empty();        
+        resultContainer.append(templateSearch({ UserList: data }));
+            
         }
     }
 );

@@ -2,6 +2,7 @@
 
 
 <link rel="stylesheet" href="~/css/friend.css" />
+<link rel="stylesheet" href="~/css/loading.css" />
 
 <div class="ex-tab container">
     <ul class="nav nav-tabs">
@@ -29,9 +30,10 @@
         <div class="tab-pane" id="sended-tab">
                         
         </div>        
-        <div class="tab-pane" id="search-tab">
-			<input id="usernameInput" />
-
+        <div class="tab-pane text-right" id="search-tab">
+            
+            <input type="text" class="form-control" id="usernameInput" placeholder="Username...">
+                     
 			<div id="resultContainer" class="d-flex flex-column h-100"></div>
 
 

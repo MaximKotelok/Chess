@@ -25,18 +25,19 @@ body {
     height: 100%;
 }
 
-.navbar {
-    height: 5%;
+
+.h-60{
+    min-height:60%;
 }
 
 
 
 .layout-container {
     background: linear-gradient(to bottom, #1A1A1A, #333);
-    height: 94%;
+    min-height: 94%;
 }
 
-    .layout-container * {
+    .layout-container *:not(input){
         color: white;
     }
 
