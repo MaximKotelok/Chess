@@ -18,5 +18,36 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;   
+}
+
+body {
+    height: 100%;
+}
+
+.navbar {
+    height: 5%;
+}
+
+
+
+.layout-container {
+    background: linear-gradient(to bottom, #1A1A1A, #333);
+    height: 94%;
+}
+
+    .layout-container * {
+        color: white;
+    }
+
+
+.navbar.border-bottom {
+    border-bottom: none !important;
+}
+
+.footer.border-top {
+    border-top: none !important;
+}
+.footer{
+    text-align:center;
 }

@@ -1,6 +1,14 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<User> SignInManager
+@{
+	ViewData["Title"] = "Home Page";
+	<link rel="stylesheet" href="~/css/home.css" />
 }
+<div class="main-text">
+	<h1 class="text-center">Checkers</h1>
+	<p class="text-center">Master the Checkers Craft: Strategy, Tactics, Fun!</p>
 
-
-<h1 class="text-center">Home</h1>
+	<div class="text-center">
+		<a asp-area="Game" asp-controller="Match" asp-action="Index" class="btn custom-btn">Play Checkers</a>
+	</div>
+</div>
