@@ -31,6 +31,12 @@
 			<button class="btn btn-danger" onclick="RecallAjax('@Model.User.Id')">Recall</button>
 		</div>
 	}
+	@if (Model.State == RequestState.ITS_YOU)
+	{		
+		<div class="d-flex justify-content-center">
+			<a class="btn btn-info" asp-area="Identity" asp-controller="Account" asp-action="Manage">Edit Profile</a>
+		</div>
+	}
 </div>
 
 <script src="~/js/profile.js"></script>
