@@ -4,16 +4,21 @@
 <table class="table table-dark">
 	<thead>
 		<tr>
-			<th>UserName</th>
-			<th>Reputation</th>
+			<th scope="col">Place</th>
+			<th scope="col">UserName</th>
+			<th scope="col">Reputation</th>
 		</tr>
 	</thead>
 	<tbody>
+		@{
+			var place = 1;
+		}
 		@foreach (var user in Model.Top)
 		{
 			@if (user.Id == Model.CurrentPlayer.Id)
 			{
 				<tr class="isYou">
+					<td scope="row">@(place++)</td>
 					<td>@user.UserName (You)</td>
 					<td>@user.Reputation</td>
 				</tr>
@@ -21,6 +26,7 @@
 			else
 			{
 				<tr>
+					<td scope="row">@(place++)</td>
 					<td>@user.UserName</td>
 					<td>@user.Reputation</td>
 				</tr>
