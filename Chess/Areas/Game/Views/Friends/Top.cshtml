@@ -1,38 +1,54 @@
 ﻿@model TopViewModel
 <link rel="stylesheet" href="~/css/top.css" />
 
-<table class="table table-dark">
-	<thead>
-		<tr>
-			<th scope="col">Place</th>
-			<th scope="col">UserName</th>
-			<th scope="col">Reputation</th>
-		</tr>
-	</thead>
-	<tbody>
-		@{
-			var place = 1;
-		}
-		@foreach (var user in Model.Top)
+<div class="container rounded bg-dark p-3">
+	<div class="row">
+		<div class="col-2">
+			Place
+		</div>
+		<div class="col-5">
+			Username
+		</div>
+		<div class="col-3">
+			Reputation
+		</div>
+	</div>
+	@{
+		var place = 1;
+	}
+	@foreach (var user in Model.Top)
+	{
+		@if (user.Id != Model.CurrentPlayer.Id)
 		{
-			@if (user.Id == Model.CurrentPlayer.Id)
-			{
-				<tr class="isYou">
-					<td scope="row">@(place++)</td>
-					<td>@user.UserName (You)</td>
-					<td>@user.Reputation</td>
-				</tr>
-			}
-			else
-			{
-				<tr>
-					<td scope="row">@(place++)</td>
-					<td>@user.UserName</td>
-					<td>@user.Reputation</td>
-				</tr>
-			}
-
-
+			<div class="row mb-2">
+				<div class="col-2">
+					@(place++)
+				</div>
+				<div class="col-5">
+					<img class="rounded-circle" src="@user.AvatarPath" height="25" width="25" alt="@user.UserName avatar" />
+					@user.UserName
+				</div>
+				<div class="col-3">
+					@user.Reputation
+				</div>
+			</div>
 		}
-	</tbody>
-</table>
+
+		else
+		{
+			<div class="isYou row mb-2">
+				<div class="col-2">
+					@(place++)
+				</div>
+				<div class="col-5">
+					<img class="rounded-circle" src="@user.AvatarPath" height="25" width="25" alt="@user.UserName avatar" />
+					@user.UserName (YOU)
+				</div>
+				<div class="col-3">
+					@user.Reputation
+				</div>
+			</div>
+		}
+	}
+
+</div>
