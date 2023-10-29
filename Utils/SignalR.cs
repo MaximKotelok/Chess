@@ -114,7 +114,7 @@ namespace Utils
 
         }
 
-        private async Task LeaveLobbyWithUserId(string sessionId, string userid, string userId)
+        private async Task LeaveLobbyWithUserId(string sessionId, string userid, string con)
         {
             if (lobby.TryGetValue(sessionId, out List<UserConnection> groups))
             {
@@ -123,7 +123,7 @@ namespace Utils
                 {
 
 
-                    user.Connections.Remove(userId);
+                    user.Connections.Remove(con);
 
                     if (user.Connections.Count > 0)
                     {
@@ -139,7 +139,7 @@ namespace Utils
                 }
             }
 
-            await Groups.RemoveFromGroupAsync(userId, sessionId);
+            await Groups.RemoveFromGroupAsync(con, sessionId);
         }
         #endregion
         #region GameGroup
@@ -153,8 +153,6 @@ namespace Utils
 
         public async Task LeaveGameGroup(string sessionId)
         {
-
-			//await Clients.Group(sessionId).SendAsync("Win");
 			await Groups.RemoveFromGroupAsync(this.Context.ConnectionId, sessionId);
 
         }
@@ -166,6 +164,26 @@ namespace Utils
 
         }
         #endregion
-    }
+
+        
+		public override async Task OnDisconnectedAsync(Exception exception)
+		{
+			
+			string con = Context.UserIdentifier;
+            var group = lobby.FirstOrDefault(a=>a.Value.FindIndex(b => b.Connections.Contains(con)) != -1);
+
+            if (!string.IsNullOrEmpty(group.Key))
+            {
+
+                var sessionId = group.Key;
+                var userId = group.Value.First(a=>a.Connections.Contains(con));
+                LeaveLobbyWithUserId(sessionId, userId.UserId, con);
+
+            }
+			await base.OnDisconnectedAsync(exception);
+		}
+	
+
+}
 
 }

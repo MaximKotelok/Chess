@@ -3,7 +3,15 @@
 <div class="text-center">
 	<img src="@Model.User.AvatarPath" alt="Avatar" class="profile-photo rounded-circle" height="150" />
 	<h1>@Model.User.UserName</h1>
-	<p>Reputation: @Model.User.Reputation</p>
+	<p>Reputation: @Model.User.Reputation </p>
+	@if (Model.State == RequestState.ITS_YOU)
+	{
+		<p>
+			<a class="text-decoration-none" asp-area="Game" asp-controller="Friends" asp-action="Top">
+				<span class="text-decoration-underline">Click here</span> to view Your local rating
+				</a>
+		</p>
+	}
 
 
 	@if (Model.State == RequestState.NOTHING)

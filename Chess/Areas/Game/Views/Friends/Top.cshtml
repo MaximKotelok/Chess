@@ -1,23 +1,32 @@
 ﻿@model TopViewModel
+<link rel="stylesheet" href="~/css/top.css" />
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>UserName</th>
-            <th>Reputation</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model.Top)
-        {
-            <tr>
-                <td>@user.UserName @if (user.Id == Model.CurrentPlayer.Id)
-                    {
-                        <span class="isYou">(You)</span>
-                    }
-                </td>
-                <td>@user.Reputation</td>
-            </tr>
-        }
-    </tbody>
+<table class="table table-dark">
+	<thead>
+		<tr>
+			<th>UserName</th>
+			<th>Reputation</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var user in Model.Top)
+		{
+			@if (user.Id == Model.CurrentPlayer.Id)
+			{
+				<tr class="isYou">
+					<td>@user.UserName (You)</td>
+					<td>@user.Reputation</td>
+				</tr>
+			}
+			else
+			{
+				<tr>
+					<td>@user.UserName</td>
+					<td>@user.Reputation</td>
+				</tr>
+			}
+
+
+		}
+	</tbody>
 </table>

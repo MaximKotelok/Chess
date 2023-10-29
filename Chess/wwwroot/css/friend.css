@@ -14,7 +14,8 @@
 
 .nav.nav-tabs .nav-link:hover {
     background: rgba(255, 255, 255, 0.7);
-    border:none;
+    border: none;
+    color: black;
 }
 
 .user-list {
@@ -41,6 +42,7 @@
 
     .user-link:hover {
         text-decoration: underline;
+        
     }
 
 .btn-container {

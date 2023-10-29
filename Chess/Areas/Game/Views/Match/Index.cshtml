@@ -1,31 +1,44 @@
 ﻿@using Models.ViewModels
 @model GameIndexViewModel
-
+<link rel="stylesheet" href="~/css/friend.css" />
 <div class="row">
 	<h3>Your friends:</h3>
+	<hr />
 	@if(Model.Friends.Count == 0)
 	{
 		<p>No friends... Find them on the <a asp-area="Game" asp-controller="Friends" asp-action="Index">friend page</a>!</p>
 	}
-	<hr />
-	@foreach(var friend in Model.Friends){	
-	<div class="w-100 d-flex justify-content-">
-								
-			<p>@friend.User.UserName</p>
-		
-			@if (friend.MatchId == null)
-			{
-				<form method="post" asp-area="Game" asp-controller="Match" asp-action="CreateMatch" asp-route-oponentId="@friend.User.Id">
-					<button class="btn btn-success" type="submit">Invite</button>
-				</form>
-			}
-			else
-			{
-				<a class="btn btn-info" asp-area="Game" asp-controller="Match" asp-action="GameLobby" asp-route-id="@friend.MatchId">Join</a>
-			}
-
-		</div>
+	else
+	{
 	
+
+
+<ul class="user-list container">
+	
+		
+		@foreach (var item in Model.Friends)
+		{
+			<li class="user-list-item">
+				<div>
+					<img src="@item.User.AvatarPath" alt="Avatar" class="profile-photo rounded-circle" height="30" />
+					<a asp-area="Game" asp-controller="Friends" asp-action="profile" asp-route-id="@item.User.Id" class="user-link">@item.User.UserName</a>
+				</div>
+				<div class="btn-container">
+						@if (item.MatchId == null)
+						{
+							<form method="post" asp-area="Game" asp-controller="Match" asp-action="CreateMatch" asp-route-oponentId="@item.User.Id">
+								<button class="btn btn-success" type="submit">Invite</button>
+							</form>
+						}
+						else
+						{
+							<a class="btn btn-info" asp-area="Game" asp-controller="Match" asp-action="GameLobby" asp-route-id="@item.MatchId">Join</a>
+						}
+				</div>
+			</li>
+		}
+
+</ul>
 
 }
 </div>
