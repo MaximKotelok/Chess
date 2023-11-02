@@ -128,4 +128,9 @@ body, html {
         width: 32px;
         height: 32px;
     }
+
+    .container {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
 }
